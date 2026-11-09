@@ -57,7 +57,7 @@
       filter: var(--vibrance-filter);
     }
 
-    /* Live Desktop Wallpaper Background (Supports Images & GIFs) */
+    /* Live Desktop Wallpaper Background */
     #desktop-bg {
       position: fixed;
       inset: 0;
@@ -597,8 +597,8 @@
   <!-- Live FPS Overlay HUD -->
   <div id="liveFpsHud">FPS: <span id="fpsNum">60</span> | LATENCY: <span id="pingNum">4ms</span></div>
 
-  <!-- Live Background Wallpaper (Supports Images & GIFs) -->
-  <img id="desktop-bg" src="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExM3ZpdGVhN2IwcWZldDF1bzRsYWw4MW11anVjMnBhY2h5ZXltcTFpNSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/4OV1bDA80ea2I/giphy.gif" alt="Wallpaper">
+  <!-- Live Background Wallpaper (Default set to your Zoro Green Haki GIF) -->
+  <img id="desktop-bg" src="https://media1.giphy.com/media/v1.Y2lkPTc5MGI3NjExOHp1aTlkajM2b2N0aWRvdjZqMW5uNTI2MG9mdWtzZTVnMTg0MThmcyZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/8KbdNGLbeKYyA/giphy.gif" alt="Wallpaper">
   <div class="bg-overlay"></div>
 
   <!-- Desktop Icons -->
@@ -677,7 +677,7 @@
     </div>
   </div>
 
-  <!-- WINDOW 1: GAME HUB (ORIGINAL IMAGES RESTORED) -->
+  <!-- WINDOW 1: GAME HUB -->
   <div class="win-window" id="gameHub">
     <div class="win-titlebar">
       <div class="win-title">
@@ -863,7 +863,7 @@
     </div>
   </div>
 
-  <!-- WINDOW 2: CHROMEBOOK CONTROL, DIGITAL VIBRANCE & CUSTOM RESOLUTIONS -->
+  <!-- WINDOW 2: CHROMEBOOK CONTROL -->
   <div class="win-window" id="cbeControlWin">
     <div class="win-titlebar">
       <div class="win-title">
@@ -877,8 +877,6 @@
     </div>
     <div class="win-content" style="padding: 28px; overflow-y: auto;">
       <div class="cbe-grid">
-        
-        <!-- NVIDIA-Style Digital Vibrance & Color Tuning -->
         <div class="cbe-card">
           <h4>🎨 Digital Vibrance & Color Tuning</h4>
           <div style="margin-bottom: 12px;">
@@ -892,7 +890,6 @@
           <button onclick="resetColors()" class="win-btn" style="background:rgba(255,255,255,0.1); width:100%; height:36px; font-weight:700;">Reset Default Colors</button>
         </div>
 
-        <!-- Custom Resolution & FPS Booster -->
         <div class="cbe-card">
           <h4>🖥️ Custom Resolution & FPS Booster</h4>
           <div style="margin-bottom: 12px;">
@@ -913,19 +910,16 @@
           </div>
         </div>
 
-        <!-- Live Performance Engine -->
         <div class="cbe-card">
           <h4>⚡ Live Performance Engine</h4>
           <div class="cbe-stat-row"><span>JS Heap Memory Used</span><span id="jsHeapText">Calculating...</span></div>
           <div class="cbe-progress-bar"><div class="cbe-progress-fill" id="jsHeapBar" style="width: 30%;"></div></div>
-
           <div class="cbe-stat-row"><span>Real Frame Rate (FPS)</span><b id="realFpsDisplay" style="color:var(--primary);">60 FPS</b></div>
           <div style="margin-top: 10px;">
             <button onclick="toggleFpsHud()" class="win-btn" style="background:rgba(255,255,255,0.1); width:100%; height:36px; font-weight:700;">Toggle FPS HUD Overlay</button>
           </div>
         </div>
 
-        <!-- GPU Pipeline Flush -->
         <div class="cbe-card">
           <h4>🎮 GPU Hardware Acceleration</h4>
           <div class="cbe-stat-row"><span>Hardware Compositing</span><b style="color:#34d399;">Active (GPU Accelerated)</b></div>
@@ -934,12 +928,11 @@
             <button onclick="flushGpuCache()" class="win-btn" style="background:var(--primary); color:#000; font-weight:700; width:100%; height:38px;">Purge DOM Garbage & Flush GPU</button>
           </div>
         </div>
-
       </div>
     </div>
   </div>
 
-  <!-- WINDOW 3: RETRO CONSOLE EMULATOR HUB -->
+  <!-- WINDOW 3: RETRO EMULATOR HUB -->
   <div class="win-window" id="emulatorWin">
     <div class="win-titlebar">
       <div class="win-title">
@@ -973,12 +966,12 @@
     </div>
   </div>
 
-  <!-- WINDOW 4: SETTINGS, CUSTOM GIF GALLERY & CUSTOMIZATION -->
+  <!-- WINDOW 4: SETTINGS & GIF GALLERY -->
   <div class="win-window" id="settingsWin">
     <div class="win-titlebar">
       <div class="win-title">
-        <svg viewBox="0 0 24 24" fill="none" stroke="#4facfe" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
-        <span>Windows Settings & Animated GIF Preset Gallery</span>
+        <svg viewBox="0 0 24 24" fill="none" stroke="#4facfe" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l-.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+        <span>Settings & Animated GIF Preset Gallery</span>
       </div>
       <div class="win-controls">
         <button class="win-btn" onclick="minimizeWindow('settingsWin')">&#x2013;</button>
@@ -999,27 +992,27 @@
       <h3 style="margin-bottom: 16px; font-size: 1.05rem; color:#fff;">🔥 Anime & Gaming Animated GIF Presets</h3>
       <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin-bottom: 28px;">
         
-        <!-- Zoro GIF -->
-        <div onclick="setWallpaper('https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExM3ZpdGVhN2IwcWZldDF1bzRsYWw4MW11anVjMnBhY2h5ZXltcTFpNSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/4OV1bDA80ea2I/giphy.gif')" class="gif-card">
-          <img src="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExM3ZpdGVhN2IwcWZldDF1bzRsYWw4MW11anVjMnBhY2h5ZXltcTFpNSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/4OV1bDA80ea2I/giphy.gif" alt="Zoro">
+        <!-- Zoro Green Haki GIF -->
+        <div onclick="setWallpaper('https://media1.giphy.com/media/v1.Y2lkPTc5MGI3NjExOHp1aTlkajM2b2N0aWRvdjZqMW5uNTI2MG9mdWtzZTVnMTg0MThmcyZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/8KbdNGLbeKYyA/giphy.gif')" class="gif-card">
+          <img src="https://media1.giphy.com/media/v1.Y2lkPTc5MGI3NjExOHp1aTlkajM2b2N0aWRvdjZqMW5uNTI2MG9mdWtzZTVnMTg0MThmcyZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/8KbdNGLbeKYyA/giphy.gif" alt="Zoro">
           <div>Zoro Green Haki</div>
         </div>
 
         <!-- Cyberpunk City -->
-        <div onclick="setWallpaper('https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExcTYwNXY4bms4dnU3bTZicmF6NnV2YTF1d25ldzdzMnVtbXExaTVhMSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/Uv1obKJDknwh0VOzWz/giphy.gif')" class="gif-card">
-          <img src="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExcTYwNXY4bms4dnU3bTZicmF6NnV2YTF1d25ldzdzMnVtbXExaTVhMSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/Uv1obKJDknwh0VOzWz/giphy.gif" alt="Cyberpunk City">
+        <div onclick="setWallpaper('https://media.giphy.com/media/Uv1obKJDknwh0VOzWz/giphy.gif')" class="gif-card">
+          <img src="https://media.giphy.com/media/Uv1obKJDknwh0VOzWz/giphy.gif" alt="Cyberpunk City">
           <div>Cyberpunk Rain</div>
         </div>
 
-        <!-- Pixel Retro Gaming -->
-        <div onclick="setWallpaper('https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExM3Yyd2o1anY0aDJleDliOG5mMGQ2MnZlOG1rcm12MG14ZjhvNmZ2dCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/l378cXatqLbrBwMfu/giphy.gif')" class="gif-card">
-          <img src="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExM3Yyd2o1anY0aDJleDliOG5mMGQ2MnZlOG1rcm12MG14ZjhvNmZ2dCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/l378cXatqLbrBwMfu/giphy.gif" alt="Pixel Night">
+        <!-- Pixel Synthwave -->
+        <div onclick="setWallpaper('https://media.giphy.com/media/l378cXatqLbrBwMfu/giphy.gif')" class="gif-card">
+          <img src="https://media.giphy.com/media/l378cXatqLbrBwMfu/giphy.gif" alt="Pixel Night">
           <div>Pixel Synthwave</div>
         </div>
 
-        <!-- Neon Anime Aura -->
-        <div onclick="setWallpaper('https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExdnkxbWRuZHN0bnlmcXBrdG9hOHY1cmNybTVvaWNnbHJtcjVvZWhidSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/13fTar4VVaFlG8/giphy.gif')" class="gif-card">
-          <img src="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExdnkxbWRuZHN0bnlmcXBrdG9hOHY1cmNybTVvaWNnbHJtcjVvZWhidSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/13fTar4VVaFlG8/giphy.gif" alt="Super Saiyan">
+        <!-- DBZ Energy Aura -->
+        <div onclick="setWallpaper('https://media.giphy.com/media/13fTar4VVaFlG8/giphy.gif')" class="gif-card">
+          <img src="https://media.giphy.com/media/13fTar4VVaFlG8/giphy.gif" alt="Super Saiyan">
           <div>DBZ Energy Aura</div>
         </div>
       </div>
@@ -1065,7 +1058,7 @@
     </div>
   </div>
 
-  <!-- WINDOW 5: UNBLOCKED EDGE BROWSER & PROXY TUNNEL (BING, YAHOO, GOOGLE) -->
+  <!-- WINDOW 5: UNBLOCKED EDGE BROWSER -->
   <div class="win-window" id="browserWin">
     <div class="win-titlebar">
       <div class="win-title">
@@ -1129,7 +1122,6 @@
     }
     requestAnimationFrame(monitorLoop);
 
-    // NVIDIA-Style Digital Vibrance & Color Filters
     let currentVibrance = 100;
     let currentContrast = 100;
 
@@ -1161,7 +1153,6 @@
       applyColorFilters();
     }
 
-    // CUSTOM RESOLUTION & FPS BOOST ENGINE (REAL VIEWPORT SCALING)
     function applyPresetResolution(val) {
       const scale = parseFloat(val);
       document.getElementById('customScaleInput').value = scale;
@@ -1190,7 +1181,7 @@
 
     function flushGpuCache() {
       document.body.style.display = 'none';
-      document.body.offsetHeight; // trigger reflow
+      document.body.offsetHeight;
       document.body.style.display = '';
       alert('DOM Garbage collected and GPU render pipeline flushed successfully!');
     }
@@ -1260,7 +1251,6 @@
       }
     });
 
-    // Reliable Cloaked Tab Game Launcher (`about:blank` Sandbox)
     function launchGameReliable(url) {
       const win = window.open('about:blank', '_blank');
       if (win) {
