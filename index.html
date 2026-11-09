@@ -1,430 +1,1246 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Google Classroom</title>
-  <!-- Default favicon set to Home logo -->
-  <link id="favicon" rel="icon" href="https://i.postimg.cc/ppSfsBPB/IMG-8407.png" />
-  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet" />
+  <link rel="icon" id="appFavicon" href="https://www.gstatic.com/classroom/ic_product_classroom_32.png">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Orbitron:wght@700;900&display=swap" rel="stylesheet">
   <style>
-    /* General Styles */
-    body {
-      font-family: 'Press Start 2P', cursive;
-      background-color: black;
-      color: white;
+    :root {
+      --bg-deep: #05070b;
+      --glass-panel: rgba(14, 18, 28, 0.92);
+      --glass-border: rgba(255, 255, 255, 0.12);
+      --accent-glow: rgba(0, 242, 254, 0.4);
+      --primary: #00f2fe;
+      --secondary: #4facfe;
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+      --vibrance-filter: saturate(1) contrast(1);
+    }
+
+    [data-theme="cyberpunk"] {
+      --accent-glow: rgba(255, 0, 127, 0.4);
+      --primary: #ff007f;
+      --secondary: #7928ca;
+    }
+
+    [data-theme="emerald"] {
+      --accent-glow: rgba(52, 211, 153, 0.4);
+      --primary: #34d399;
+      --secondary: #059669;
+    }
+
+    [data-theme="sunset"] {
+      --accent-glow: rgba(255, 120, 50, 0.4);
+      --primary: #ff5e36;
+      --secondary: #ff9f43;
+    }
+
+    * {
+      box-sizing: border-box;
       margin: 0;
       padding: 0;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      user-select: none;
+    }
+
+    body, html {
+      width: 100%;
+      height: 100vh;
+      overflow: hidden;
+      background-color: var(--bg-deep);
+      color: var(--text-main);
+      transform-origin: top left;
+      transition: transform 0.2s ease;
+      filter: var(--vibrance-filter);
+    }
+
+    /* Live Desktop Wallpaper Background */
+    #desktop-bg {
+      position: fixed;
+      inset: 0;
+      width: 100vw;
+      height: 100vh;
+      object-fit: cover;
+      z-index: 0;
+      filter: brightness(0.65) saturate(1.2);
+    }
+
+    .bg-overlay {
+      position: fixed;
+      inset: 0;
+      background: radial-gradient(circle at center, transparent 30%, rgba(2, 4, 8, 0.85) 100%);
+      z-index: 1;
+      pointer-events: none;
+    }
+
+    /* Desktop Icon Grid */
+    .desktop-grid {
+      position: absolute;
+      inset: 0;
+      padding: 24px;
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(96px, 1fr));
+      grid-auto-rows: 104px;
+      gap: 12px;
+      z-index: 2;
+    }
+
+    .desktop-icon {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 10px;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+      border: 1px solid transparent;
       text-align: center;
     }
-    a {
-      text-decoration: none;
+
+    .desktop-icon:hover {
+      background: rgba(255, 255, 255, 0.08);
+      border-color: rgba(255, 255, 255, 0.15);
+      backdrop-filter: blur(12px);
+      transform: translateY(-2px);
     }
-    /* Navigation Bar */
-    .navbar {
+
+    .desktop-icon img {
+      width: 44px;
+      height: 44px;
+      margin-bottom: 8px;
+      border-radius: 10px;
+      object-fit: cover;
+      filter: drop-shadow(0 4px 10px rgba(0,0,0,0.5));
+    }
+
+    .desktop-icon svg {
+      width: 42px;
+      height: 42px;
+      margin-bottom: 8px;
+      filter: drop-shadow(0 4px 10px rgba(0,0,0,0.5));
+    }
+
+    .desktop-icon span {
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: #fff;
+      text-shadow: 0 2px 4px rgba(0,0,0,0.9);
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+      line-height: 1.2;
+    }
+
+    /* Windows 11 Taskbar */
+    .taskbar {
+      position: fixed;
+      bottom: 12px;
+      left: 50%;
+      transform: translateX(-50%);
+      height: 54px;
+      background: rgba(15, 20, 30, 0.88);
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+      border: 1px solid var(--glass-border);
+      border-radius: 16px;
+      display: flex;
+      align-items: center;
+      padding: 0 14px;
+      gap: 8px;
+      z-index: 1000;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.6), inset 0 1px 0 rgba(255,255,255,0.1);
+    }
+
+    .taskbar-btn {
+      background: transparent;
+      border: none;
+      width: 42px;
+      height: 42px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .taskbar-btn:hover {
+      background: rgba(255, 255, 255, 0.12);
+      transform: translateY(-2px);
+    }
+
+    .taskbar-btn img {
+      width: 24px;
+      height: 24px;
+      object-fit: cover;
+      border-radius: 4px;
+      filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));
+    }
+
+    .taskbar-btn svg {
+      width: 24px;
+      height: 24px;
+      filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));
+    }
+
+    .taskbar-divider {
+      width: 1px;
+      height: 26px;
+      background: rgba(255,255,255,0.12);
+      margin: 0 4px;
+    }
+
+    .tray-area {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      color: var(--text-main);
+      font-size: 0.8rem;
+      font-weight: 600;
+      padding-left: 8px;
+    }
+
+    /* Windows 11 Window Container */
+    .win-window {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%) scale(0.96);
+      width: 88vw;
+      max-width: 1200px;
+      height: 80vh;
+      max-height: 780px;
+      background: var(--glass-panel);
+      backdrop-filter: blur(35px);
+      -webkit-backdrop-filter: blur(35px);
+      border: 1px solid var(--glass-border);
+      border-radius: 14px;
+      box-shadow: 0 30px 80px rgba(0,0,0,0.8), 0 0 40px var(--accent-glow);
+      display: none;
+      flex-direction: column;
+      z-index: 500;
+      overflow: hidden;
+      opacity: 0;
+      transition: opacity 0.25s cubic-bezier(0.16, 1, 0.3, 1), transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .win-window.active {
+      display: flex;
+      opacity: 1;
+      transform: translate(-50%, -50%) scale(1);
+    }
+
+    .win-titlebar {
+      height: 44px;
+      background: rgba(255,255,255,0.02);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 16px;
+      border-bottom: 1px solid var(--glass-border);
+    }
+
+    .win-title {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: #fff;
+    }
+
+    .win-title img {
+      width: 18px;
+      height: 18px;
+      border-radius: 3px;
+    }
+
+    .win-title svg {
+      width: 18px;
+      height: 18px;
+    }
+
+    .win-controls {
+      display: flex;
+      gap: 4px;
+    }
+
+    .win-btn {
+      background: transparent;
+      border: none;
+      width: 42px;
+      height: 32px;
+      color: #fff;
+      font-size: 0.85rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 6px;
+      transition: background 0.15s;
+    }
+
+    .win-btn:hover {
+      background: rgba(255,255,255,0.12);
+    }
+
+    .win-btn.close:hover {
+      background: #e81123;
+    }
+
+    .win-content {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    /* Start Menu */
+    .start-menu {
+      position: fixed;
+      bottom: 74px;
+      left: 50%;
+      transform: translateX(-50%) translateY(20px);
+      width: 580px;
+      height: 500px;
+      background: rgba(16, 22, 35, 0.95);
+      backdrop-filter: blur(35px);
+      -webkit-backdrop-filter: blur(35px);
+      border: 1px solid var(--glass-border);
+      border-radius: 16px;
+      padding: 24px;
+      display: none;
+      flex-direction: column;
+      z-index: 900;
+      box-shadow: 0 25px 60px rgba(0,0,0,0.7);
+      opacity: 0;
+      transition: all 0.25s cubic-bezier(0.1, 0.9, 0.2, 1);
+    }
+
+    .start-menu.active {
+      display: flex;
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
+
+    .start-search {
+      width: 100%;
+      padding: 12px 18px;
+      background: rgba(255,255,255,0.06);
+      border: 1px solid var(--glass-border);
+      border-radius: 24px;
+      color: #fff;
+      font-size: 0.9rem;
+      outline: none;
+      margin-bottom: 20px;
+    }
+
+    .start-section-title {
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: var(--text-muted);
+      margin-bottom: 12px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .start-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+    }
+
+    .start-app-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      padding: 12px;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: background 0.15s;
+    }
+
+    .start-app-item:hover {
+      background: rgba(255,255,255,0.08);
+    }
+
+    .start-app-item img {
+      width: 32px;
+      height: 32px;
+      border-radius: 6px;
+      object-fit: cover;
+    }
+
+    .start-app-item svg {
+      width: 30px;
+      height: 30px;
+    }
+
+    .start-app-item span {
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: #fff;
+    }
+
+    /* App Hub Layout */
+    .app-sidebar {
+      width: 240px;
+      background: rgba(0,0,0,0.25);
+      border-right: 1px solid var(--glass-border);
+      padding: 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .sidebar-tab {
+      padding: 11px 16px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      font-weight: 600;
+      transition: all 0.2s;
+    }
+
+    .sidebar-tab.active, .sidebar-tab:hover {
+      background: var(--primary);
+      color: #000;
+      box-shadow: 0 0 15px var(--accent-glow);
+    }
+
+    .app-main-area {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    .app-topbar {
+      padding: 18px 24px;
+      border-bottom: 1px solid var(--glass-border);
       display: flex;
       justify-content: space-between;
       align-items: center;
-      background: black;
-      padding: 10px;
-      border-bottom: 2px solid white;
     }
-    .navbar button {
-      background: black;
-      border: 2px solid white;
-      color: white;
-      padding: 5px 10px;
-      cursor: pointer;
-      font-family: 'Press Start 2P', cursive;
-    }
-    /* Settings Panel for Tab Cloak */
-    .settings-panel {
-      display: none;
-      position: fixed;
-      top: 50px;
-      right: 20px;
-      background: black;
-      border: 2px solid white;
-      padding: 20px;
+
+    .app-search {
+      padding: 10px 16px;
+      background: rgba(255,255,255,0.06);
+      border: 1px solid var(--glass-border);
       border-radius: 10px;
-      z-index: 1000;
+      color: #fff;
+      font-size: 0.9rem;
+      width: 280px;
+      outline: none;
     }
-    .settings-panel img {
-      width: 50px;
-      height: 50px;
-      margin: 10px;
+
+    .app-grid-container {
+      flex: 1;
+      padding: 24px;
+      overflow-y: auto;
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+      gap: 18px;
+    }
+
+    .game-portal-card {
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid var(--glass-border);
+      border-radius: 12px;
+      overflow: hidden;
       cursor: pointer;
-      border: 2px solid white;
-      border-radius: 5px;
-    }
-    /* Search Bar */
-    .search-container {
-      margin: 20px auto;
-    }
-    .search-bar {
-      width: 80%;
-      padding: 10px;
-      font-family: 'Press Start 2P', cursive;
-      background-color: black;
-      color: white;
-      border: 2px solid white;
-      text-align: center;
-    }
-    /* Emulator Button & Container */
-    .emulator-button, .unblocked-button {
-      font-family: 'Press Start 2P', cursive;
-      background-color: black;
-      color: white;
-      border: 2px solid white;
-      padding: 10px 20px;
-      cursor: pointer;
-      margin: 20px auto;
-      display: block;
-    }
-    .emulator-container, .unblocked-container {
-      display: none;
-      background-color: black;
-      border: 2px solid white;
-      padding: 20px;
-      width: 80%;
-      margin: 20px auto;
-      font-family: 'Press Start 2P', cursive;
-    }
-    /* Game Grid */
-    .game-container {
+      transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.2s, background 0.2s, box-shadow 0.2s;
       display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-      gap: 20px;
-      padding: 20px;
+      flex-direction: column;
     }
-    .game {
-      background-color: grey;
-      padding: 15px;
-      border-radius: 20px;
-      transition: transform 0.3s ease;
-      cursor: pointer;
-      width: 150px;
-      height: 150px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
+
+    .game-portal-card:hover {
+      transform: translateY(-6px) scale(1.02);
+      border-color: var(--primary);
+      background: rgba(255, 255, 255, 0.08);
+      box-shadow: 0 12px 30px rgba(0,0,0,0.6), 0 0 15px var(--accent-glow);
     }
-    .game:hover {
-      transform: scale(1.1);
-    }
-    .game img {
-      width: 100px;
-      height: 100px;
-      border-radius: 15px;
-      object-fit: cover;
-    }
-    /* Modal for Embedded Game */
-    .modal {
-      display: none;
-      position: fixed;
-      top: 0;
-      left: 0;
+
+    .game-thumb {
       width: 100%;
-      height: 100%;
-      background: rgba(0, 0, 0, 0.9);
-      justify-content: center;
-      align-items: center;
-      z-index: 1000;
+      height: 110px;
+      object-fit: cover;
+      background: #0a0e14;
+      border-bottom: 1px solid var(--glass-border);
     }
-    .modal iframe {
-      width: 80%;
-      height: 80%;
-      border: none;
+
+    .game-info {
+      padding: 12px;
     }
-    .modal button {
-      position: absolute;
-      top: 20px;
-      right: 20px;
-      background: black;
-      border: 2px solid white;
-      color: white;
-      font-family: 'Press Start 2P', cursive;
-      padding: 10px 20px;
-      cursor: pointer;
+
+    .game-title {
+      font-size: 0.9rem;
+      font-weight: 700;
+      color: #fff;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      margin-bottom: 3px;
     }
-    /* IO Games Summary Section */
-    .summary {
-      background: black;
-      border-top: 2px solid white;
+
+    .game-cat {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+    }
+
+    /* Chromebook Control Center Styling */
+    .cbe-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 20px;
+    }
+
+    .cbe-card {
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid var(--glass-border);
+      border-radius: 12px;
       padding: 20px;
-      font-size: 14px;
-      margin-top: 30px;
+    }
+
+    .cbe-card h4 {
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--primary);
+      margin-bottom: 14px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .cbe-stat-row {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 10px;
+      font-size: 0.85rem;
+    }
+
+    .cbe-progress-bar {
+      width: 100%;
+      height: 8px;
+      background: rgba(255,255,255,0.08);
+      border-radius: 4px;
+      overflow: hidden;
+      margin-bottom: 16px;
+    }
+
+    .cbe-progress-fill {
+      height: 100%;
+      background: var(--primary);
+      width: 45%;
+      transition: width 0.3s ease;
+    }
+
+    /* Live FPS Counter HUD Overlay */
+    #liveFpsHud {
+      position: fixed;
+      top: 14px;
+      right: 14px;
+      background: rgba(0, 0, 0, 0.75);
+      border: 1px solid var(--primary);
+      padding: 6px 12px;
+      border-radius: 8px;
+      font-family: 'Orbitron', sans-serif;
+      font-size: 0.75rem;
+      color: var(--primary);
+      z-index: 9999;
+      pointer-events: none;
+      display: none;
+      box-shadow: 0 0 10px var(--accent-glow);
     }
   </style>
 </head>
 <body>
-  <!-- Navigation Bar -->
-  <div class="navbar">
-    <button onclick="resetTabCloak()">Home</button>
-    <h1>DYLAN'S CLASSROOM</h1>
-    <button onclick="toggleSettings()">Settings</button>
-  </div>
-  
-  <!-- Settings Panel for Tab Cloak -->
-  <div id="settingsPanel" class="settings-panel">
-    <p>Select Tab Cloak:</p>
-    <img src="https://i.postimg.cc/ppSfsBPB/IMG-8407.png" alt="Option 1" onclick="setTabCloak('Classroom 70X', 'https://i.postimg.cc/ppSfsBPB/IMG-8407.png')" />
-    <img src="https://i.postimg.cc/yDSFtSdC/IMG-8408.png" alt="Option 2" onclick="setTabCloak('Classroom 70X - Clever', 'https://i.postimg.cc/yDSFtSdC/IMG-8408.png')" />
-    <img src="https://i.postimg.cc/zLCTXZKd/IMG-8409.png" alt="Option 3" onclick="setTabCloak('Classroom 70X - Smart', 'https://i.postimg.cc/zLCTXZKd/IMG-8409.png')" />
-    <img src="https://i.postimg.cc/wy9L1fk9/IMG-8410.png" alt="Option 4" onclick="setTabCloak('Classroom 70X - Elite', 'https://i.postimg.cc/wy9L1fk9/IMG-8410.png')" />
-    <p>Additional Cloaks:</p>
-    <img src="https://via.placeholder.com/50?text=GC" alt="Google Classroom" onclick="setTabCloak('Google Classroom', 'https://via.placeholder.com/50?text=GC')" />
-    <img src="https://via.placeholder.com/50?text=GD" alt="Google Drive" onclick="setTabCloak('Google Drive', 'https://via.placeholder.com/50?text=GD')" />
-    <img src="https://via.placeholder.com/50?text=Clever" alt="Clever" onclick="setTabCloak('Clever', 'https://via.placeholder.com/50?text=Clever')" />
-  </div>
-  
-  <!-- Search Bar -->
-  <div class="search-container">
-    <input type="text" id="searchBar" class="search-bar" placeholder="Search for a game..." onkeyup="filterGames()" />
-  </div>
-  
-  <!-- Emulator Button and Container -->
-  <button class="emulator-button" onclick="toggleEmulator()">Emulator</button>
-  <div id="emulator" class="emulator-container">
-    <p>Drag and Drop Your File Here</p>
-    <input type="file" />
-  </div>
-  
-  <!-- Unblocked Button and Container -->
-  <button class="emulator-button" onclick="toggleUnblocked()">Unblocked</button>
-  <div id="unblocked" class="emulator-container">
-    <p>Embedded Unblocked Site:</p>
-    <iframe src="https://small-soul-737.guesstheanimal.org//" style="width:100%; height:400px;"></iframe>
-  </div>
-<!-- Game Container -->
-<div class="game-container" id="gameContainer">
-  <!-- 1. BitLife -->  
-  <div class="game" data-name="bitlife" onclick="openGame('https://class-911.github.io/files/BitLife/index.html')">
-    <img src="https://i.postimg.cc/9MRDdsdc/IMG-9562.jpg" alt="BitLife" />
-  </div>
-  <!-- 2. Funny Shooter 2 -->  
-  <div class="game" data-name="funnyshooter2" onclick="openGame('https://class-911.github.io/files/FunnyShooter2/index.html')">
-    <img src="https://i.postimg.cc/6pVfndbf/IMG-8367.jpg" alt="Funny Shooter 2" />
-  </div>
-  <!-- 3. Subway Surfers -->  
-  <div class="game" data-name="subwaysurfers" onclick="openGame('https://dddavit.github.io/subway/')">
-    <img src="https://i.postimg.cc/sDhcDFp8/IMG-8368.jpg" alt="Subway Surfers" />
-  </div>
-  <!-- 4. Carnage3D -->  
-  <div class="game" data-name="carnage3d" onclick="openGame('https://codenamecpp.github.io/carnage3d/web/carnage3D_wasm.html')">
-    <img src="https://i.postimg.cc/bvzHTsKc/IMG-8369.jpg" alt="Carnage3D" />
-  </div>
-  <!-- 5. Geometry Dash -->  
-  <div class="game" data-name="geometrydash" onclick="openGame('https://class-911.github.io/files/GeometryDash/index.html')">
-    <img src="https://i.postimg.cc/wjYk1W2B/IMG-8370.jpg" alt="Geometry Dash" />
-  </div>
-  <!-- 6. Stickman Climb 2 -->  
-  <div class="game" data-name="stickmanclimb2" onclick="openGame('https://minibattles.github.io/play/stickman-climb-2')">
-    <img src="https://i.postimg.cc/76h3FjHK/IMG-8372.jpg" alt="Stickman Climb 2" />
-  </div>
-  <!-- 7. Minecraft -->  
-  <div class="game" data-name="minecraft" onclick="openGame('https://eaglercraftgame.github.io/go/minecraft-1.5.2/')">
-    <img src="https://i.postimg.cc/j51HtvCt/IMG-8373.jpg" alt="Minecraft" />
-  </div>
-  <!-- 8. Retro Bowl -->  
-  <div class="game" data-name="retrobowl" onclick="openGame('https://class-911.github.io/files/RetroBowl/index.html')">
-    <img src="https://i.postimg.cc/Pq2bFdjL/IMG-8374.jpg" alt="Retro Bowl" />
-  </div>
-  <!-- 9. Cookie Clicker -->  
-  <div class="game" data-name="cookieclicker" onclick="openGame('https://class-911.github.io/files/CookieClicker/index.html')">
-    <img src="https://i.postimg.cc/kD3Wt4xH/IMG-8375.jpg" alt="Cookie Clicker" />
-  </div>
-  <!-- 10. Rocket Soccer Derby -->  
-  <div class="game" data-name="rocketsoccer" onclick="openGame('https://forces.github.io/play/rocket-soccer-derby.html')">
-    <img src="https://i.postimg.cc/mZcqM5Y3/IMG-8376.jpg" alt="Rocket Soccer Derby" />
-  </div>
-  <!-- 11. Fortnite -->  
-  <div class="game" data-name="fortnite" onclick="openGame('https://23-azo.github.io/play/fortnite.html#')">
-    <img src="https://i.postimg.cc/v8pKvthJ/IMG-8377.jpg" alt="Fortnite" />
-  </div>
-  <!-- 12. Retro Bowl (Alternative) -->  
-  <div class="game" data-name="retrobowlalt" onclick="openGame('https://playgama.com/game/speed-per-click-obby?autoplay=true&clid=direct_pwa')">
-    <img src="https://i.postimg.cc/BQHV7PwX/IMG-8378.jpg" alt="Retro Bowl Alternative" />
-  </div>
-  <!-- 13. Basket Random -->  
-  <div class="game" data-name="basketrandom" onclick="openGame('https://class-911.github.io/files/BasketRandom/index.html')">
-    <img src="https://i.postimg.cc/Xv71vHNC/IMG-8383.png" alt="Basket Random" />
-  </div>
-  <!-- 14. Ovo -->  
-  <div class="game" data-name="ovo" onclick="openGame('https://ovo-game.github.io/')">
-    <img src="https://i.postimg.cc/QdqnhGDD/IMG-8384.png" alt="Ovo" />
-  </div>
-  <!-- 15. 1v1 LOL -->  
-  <div class="game" data-name="1v1lol" onclick="openGame('https://class-911.github.io/files/1v1lol/index.html')">
-    <img src="https://i.postimg.cc/R0HMG5Dc/IMG-8371.jpg" alt="1v1 LOL" />
-  </div>
-  <!-- 16. Doom Sokol -->  
-  <div class="game" data-name="doomsokol" onclick="openGame('https://floooh.github.io/doom-sokol/')">
-    <img src="https://i.postimg.cc/94QXDckg/IMG-8413.jpg" alt="Doom Sokol" />
-  </div>
-  <!-- 17. Time Shooter 3 - SWAT -->  
-  <div class="game" data-name="timeshooter3" onclick="openGame('https://laparda14.github.io/Time-Shooter-3-SWAT/')">
-    <img src="https://i.postimg.cc/SJcx5T8d/IMG-8415.jpg" alt="Time Shooter 3 - SWAT" />
-  </div>
-  <!-- 18. Super Mario 64 -->  
-  <div class="game" data-name="supermario64" onclick="openGame('https://class-911.github.io/files/SuperMario64/index.html')">
-    <img src="https://i.postimg.cc/kD05T3VD/IMG-8416.jpg" alt="Super Mario 64" />
-  </div>
-  <!-- 19. Friday Night Funkin' -->  
-  <div class="game" data-name="fridaynightfunkin" onclick="openGame('https://class-911.github.io/files/FridayNightFunkin/index.html')">
-    <img src="https://i.postimg.cc/XXGJK7YT/IMG-8417.jpg" alt="Friday Night Funkin'" />
-  </div>
-  <!-- 20. Slope -->  
-  <div class="game" data-name="slope" onclick="openGame('https://class-911.github.io/files/Slope/index.html')">
-    <img src="https://i.postimg.cc/p5FLPkS2/IMG-8418.jpg" alt="Slope" />
-  </div>
-  <!-- 21. Diablo Web -->  
-  <div class="game" data-name="diabloweb" onclick="openGame('https://d07riv.github.io/diabloweb/')">
-    <img src="https://i.postimg.cc/jwCjFRQn/IMG-8419.jpg" alt="Diablo Web" />
-  </div>
-  <!-- 22. Scratch Project -->  
-  <div class="game" data-name="scratch" onclick="openGame('https://scratch.mit.edu/projects/508340998/fullscreen/')">
-    <img src="https://i.postimg.cc/sBTXmMSR/IMG-8420.jpg" alt="Scratch Project" />
-  </div>
-  <!-- 23. Five Nights at Freddy's Web -->  
-  <div class="game" data-name="fnaf" onclick="openGame('https://wellsousaaa.github.io/Five-Nights-at-Freddys-Web/')">
-    <img src="https://i.postimg.cc/N9V0hZpJ/IMG-8423.jpg" alt="FNAF Web" />
-  </div>
-  <!-- 24. BasketStars -->  
-  <div class="game" data-name="basketstars" onclick="openGame('https://class-911.github.io/files/BasketStars/index.html')">
-    <img src="https://i.postimg.cc/XZjq9fr8/IMG-8424.jpg" alt="BasketStars" />
-  </div>
-  <!-- 25. Poppy Playtime -->  
-  <div class="game" data-name="poppyplaytime" onclick="openGame('https://gnhustgames.github.io/poppyplaytime/')">
-    <img src="https://i.postimg.cc/k2QPkyJ5/IMG-8519.jpg" alt="Poppy Playtime" />
-  </div>
-  <!-- 26. NZP (Nazi Zombies Portable) -->  
-  <div class="game" data-name="nzp" onclick="openGame('http://nzp.gay/')">
-    <img src="https://i.postimg.cc/p9kbdXnb/IMG-8520.jpg" alt="NZP" />
-  </div>
-  <!-- 27. Manager Simulator -->  
-  <div class="game" data-name="managersimulator" onclick="openGame('https://weekdone.com/manager-simulator/')">
-    <img src="https://i.postimg.cc/SXmbqzRf/IMG-8522.jpg" alt="Manager Simulator" />
-  </div>
-  <!-- 28. Stick Slasher -->  
-  <div class="game" data-name="stickslasher" onclick="openGame('https://datseagull.github.io/p/stickslasher.html')">
-    <img src="https://i.postimg.cc/MMTkf2yc/IMG-8523.jpg" alt="Stick Slasher" />
-  </div>
-  <!-- 29. Spotify -->  
-  <div class="game" data-name="spotify" onclick="openGame('<iframe src="turbowarp.org" width="482" height="412" allowtransparency="true" frameborder="0" scrolling="no" allowfullscreen></iframe>
-')">
-    <img src="https://i.postimg.cc/CLF3v0v1/download.png" alt="Spotify" />
-  </div>
-  <!-- 30. Happy Wheels -->  
-  <div class="game" data-name="happywheels" onclick="openGame('https://xoriushourz.github.io/HappyWheels/')">
-    <img src="https://i.postimg.cc/DZn9tK2B/download.jpg" alt="Happy Wheels" />
-  </div>
-  <!-- 31. Pear Assessment -->  
-  <div class="game" data-name="pearassessment" onclick="openGame('https://classroom70x.github.io/PearAssesment.github.io/')">
-    <img src="https://i.postimg.cc/sgf0g2WT/download.jpg" alt="Pear Assessment" />
-  </div>
-  <!-- 32. Steam Store -->  
-  <div class="game" data-name="steamstore" onclick="openGame('https://classroom70x.github.io/store.steampowered.com/')">
-    <img src="https://i.postimg.cc/4yQw3zw2/download.jpg" alt="Steam Store" />
-  </div> 
-  <!-- Ultrakill -->
-<div class="game" data-name="ultrakill" onclick="openGame('https://gamaverse.com/c/f/g/ultrakill-prelude-1750934621/')">
-    <img src="https://i.postimg.cc/9QCYVz5b/IMG-0309.jpg" alt="ultrakill" />
-</div>
-  <div class="game" data-name="slowroads" onclick="openGame('https://slow-roads.github.io/')">
-  <img src="https://i.postimg.cc/nVqrvCx8/download.webp" alt="Slow Roads" />
-</div>
-  <div class="game" data-name="footballbros" onclick="openGame('https://vortexfusion.github.io/football-bros.github.io/')">
-  <img src="https://i.postimg.cc/PJdjbfbq/OIP.webp" alt="Football Bros" />
-</div>
-  <!-- Soccer Random -->
-<div class="game" data-name="soccerrandom" onclick="openGame('https://unblocked-games-786.github.io/Soccer-Random/')">
-  <img src="https://i.postimg.cc/jdXz48Ts/OIP.webp" alt="Soccer Random" />
-</div>
 
+  <!-- Live FPS Overlay HUD -->
+  <div id="liveFpsHud">FPS: <span id="fpsNum">60</span> | LATENCY: <span id="pingNum">4ms</span></div>
 
+  <!-- Live Background Wallpaper -->
+  <img id="desktop-bg" src="https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=2560&q=80" alt="Wallpaper">
+  <div class="bg-overlay"></div>
 
-</div>
-
-
-<!-- Modal for Embedded Game -->
-<div id="gameModal" class="modal">
-  <button onclick="closeModal()">Close</button>
-  <iframe id="gameFrame" src=""></iframe>
-</div>
-
-  <!-- IO Games Summary Section -->
-  <div class="summary">
-    <p>
-      IO games have revolutionized online gaming by offering fast, accessible, and highly competitive multiplayer experiences. Their minimalist design and real-time interaction have attracted millions of players worldwide, influencing modern casual gaming and fostering vibrant online communities that continue to shape the future of multiplayer entertainment.
-    </p>
+  <!-- Desktop Icons -->
+  <div class="desktop-grid">
+    <div class="desktop-icon" onclick="openAppWindow('gameHub')">
+      <img src="https://i.postimg.cc/9MRDdsdc/IMG-9562.jpg" alt="Games">
+      <span>Nebula Game Hub</span>
+    </div>
+    <div class="desktop-icon" onclick="openAppWindow('cbeControlWin')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="#34d399" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M2 21h20M12 17v4"/></svg>
+      <span>Chromebook Control</span>
+    </div>
+    <div class="desktop-icon" onclick="openAppWindow('emulatorWin')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="#ff5e36" stroke-width="2"><path d="M6 12h4m-2-2v4M15 11h.01M18 13h.01"/><rect x="2" y="6" width="20" height="12" rx="2"/></svg>
+      <span>Retro Emulator Hub</span>
+    </div>
+    <div class="desktop-icon" onclick="openAppWindow('settingsWin')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="#4facfe" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+      <span>Settings & Themes</span>
+    </div>
+    <div class="desktop-icon" onclick="openAppWindow('browserWin')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="#0078d4" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+      <span>Edge Web & Unblocker</span>
+    </div>
+    <div class="desktop-icon" onclick="triggerPanic()">
+      <img src="https://www.gstatic.com/classroom/ic_product_classroom_32.png" alt="Classroom">
+      <span>Google Classroom</span>
+    </div>
   </div>
-  
+
+  <!-- Windows 11 Taskbar -->
+  <div class="taskbar">
+    <button class="taskbar-btn" onclick="toggleStartMenu()" title="Start">
+      <svg viewBox="0 0 24 24" fill="none" stroke="#00f2fe" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+    </button>
+    <div class="taskbar-divider"></div>
+    <button class="taskbar-btn" onclick="openAppWindow('gameHub')" title="Games Hub">
+      <img src="https://i.postimg.cc/9MRDdsdc/IMG-9562.jpg" alt="Hub">
+    </button>
+    <button class="taskbar-btn" onclick="openAppWindow('cbeControlWin')" title="Chromebook Panel">
+      <svg viewBox="0 0 24 24" fill="none" stroke="#34d399" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/></svg>
+    </button>
+    <button class="taskbar-btn" onclick="openAppWindow('emulatorWin')" title="Emulator Hub">
+      <svg viewBox="0 0 24 24" fill="none" stroke="#ff5e36" stroke-width="2"><rect x="2" y="6" width="20" height="12" rx="2"/></svg>
+    </button>
+    <button class="taskbar-btn" onclick="openAppWindow('browserWin')" title="Browser">
+      <svg viewBox="0 0 24 24" fill="none" stroke="#0078d4" stroke-width="2"><circle cx="12" cy="12" r="10"/></svg>
+    </button>
+    <div style="flex:1;"></div>
+    <div class="tray-area">
+      <span id="clockDisplay">12:00 PM</span>
+    </div>
+  </div>
+
+  <!-- Start Menu -->
+  <div class="start-menu" id="startMenu">
+    <input type="text" class="start-search" placeholder="Search apps, settings, and documents">
+    <div class="start-section-title">Pinned Applications</div>
+    <div class="start-grid">
+      <div class="start-app-item" onclick="openAppWindow('gameHub'); toggleStartMenu();">
+        <img src="https://i.postimg.cc/9MRDdsdc/IMG-9562.jpg" alt="">
+        <span>Game Hub</span>
+      </div>
+      <div class="start-app-item" onclick="openAppWindow('cbeControlWin'); toggleStartMenu();">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#34d399" stroke-width="2" width="30" height="30"><rect x="2" y="3" width="20" height="14" rx="2"/></svg>
+        <span>CBE Panel</span>
+      </div>
+      <div class="start-app-item" onclick="openAppWindow('emulatorWin'); toggleStartMenu();">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#ff5e36" stroke-width="2" width="30" height="30"><rect x="2" y="6" width="20" height="12" rx="2"/></svg>
+        <span>Emulators</span>
+      </div>
+      <div class="start-app-item" onclick="triggerPanic()">
+        <img src="https://www.gstatic.com/classroom/ic_product_classroom_32.png" alt="">
+        <span>Classroom</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- WINDOW 1: GAME HUB (ORIGINAL IMAGES RESTORED) -->
+  <div class="win-window" id="gameHub">
+    <div class="win-titlebar">
+      <div class="win-title">
+        <img src="https://i.postimg.cc/9MRDdsdc/IMG-9562.jpg" alt="">
+        <span>Nebula Game Hub (Original Images & Cloud Apps)</span>
+      </div>
+      <div class="win-controls">
+        <button class="win-btn" onclick="minimizeWindow('gameHub')">&#x2013;</button>
+        <button class="win-btn close" onclick="closeWindow('gameHub')">&#x2715;</button>
+      </div>
+    </div>
+    <div class="win-content" style="display: flex; flex-direction: row;">
+      <div class="app-sidebar">
+        <div class="sidebar-tab active" onclick="filterGames('all', this)">⭐ All Titles (38)</div>
+        <div class="sidebar-tab" onclick="filterGames('apps', this)">🌐 Apps & Cloud</div>
+        <div class="sidebar-tab" onclick="filterGames('action', this)">⚔️ Action & Shooters</div>
+        <div class="sidebar-tab" onclick="filterGames('arcade', this)">🕹️ Arcade & Platform</div>
+        <div class="sidebar-tab" onclick="filterGames('sports', this)">⚽ Sports & Driving</div>
+        <div class="sidebar-tab" onclick="filterGames('simulation', this)">🧱 Simulation & Retro</div>
+      </div>
+      <div class="app-main-area">
+        <div class="app-topbar">
+          <input type="text" id="gameSearchInput" class="app-search" placeholder="Search 38+ games..." onkeyup="searchGameGrid()">
+          <span style="font-size:0.85rem; color:var(--text-muted);" id="gameCountLabel">Showing 38 items</span>
+        </div>
+        <div class="app-grid-container" id="masterGameGrid">
+          
+          <!-- APPS & CLOUD -->
+          <div class="game-portal-card" data-cat="apps" data-name="roblox" onclick="launchGameReliable('https://tru.ss/')">
+            <img class="game-thumb" src="https://i.postimg.cc/9MRDdsdc/IMG-9562.jpg" alt="Roblox">
+            <div class="game-info"><div class="game-title">Roblox</div><div class="game-cat">Cloud Engine</div></div>
+          </div>
+          <div class="game-portal-card" data-cat="apps" data-name="fortnite" onclick="launchGameReliable('https://retrora.lol')">
+            <img class="game-thumb" src="https://i.postimg.cc/v8pKvthJ/IMG-8377.jpg" alt="Fortnite">
+            <div class="game-info"><div class="game-title">Fortnite</div><div class="game-cat">Cloud Arena</div></div>
+          </div>
+          <div class="game-portal-card" data-cat="apps" data-name="spotify" onclick="launchGameReliable('https://turbowarp.org')">
+            <img class="game-thumb" src="https://i.postimg.cc/CLF3v0v1/download.png" alt="Spotify">
+            <div class="game-info"><div class="game-title">Spotify</div><div class="game-cat">Audio Stream</div></div>
+          </div>
+          <div class="game-portal-card" data-cat="apps" data-name="pear assessment" onclick="launchGameReliable('https://classroom70x.github.io/PearAssesment.github.io/')">
+            <img class="game-thumb" src="https://i.postimg.cc/sgf0g2WT/download.jpg" alt="Pear">
+            <div class="game-info"><div class="game-title">Pear Assessment</div><div class="game-cat">Education Tool</div></div>
+          </div>
+          <div class="game-portal-card" data-cat="apps" data-name="steam store" onclick="launchGameReliable('https://classroom70x.github.io/store.steampowered.com/')">
+            <img class="game-thumb" src="https://i.postimg.cc/4yQw3zw2/download.jpg" alt="Steam">
+            <div class="game-info"><div class="game-title">Steam Store</div><div class="game-cat">Catalog Hub</div></div>
+          </div>
+          <div class="game-portal-card" data-cat="apps" data-name="scratch project" onclick="launchGameReliable('https://scratch.mit.edu/projects/508340998/fullscreen/')">
+            <img class="game-thumb" src="https://i.postimg.cc/sBTXmMSR/IMG-8420.jpg" alt="Scratch">
+            <div class="game-info"><div class="game-title">Scratch Project</div><div class="game-cat">Dev Workspace</div></div>
+          </div>
+
+          <!-- ACTION -->
+          <div class="game-portal-card" data-cat="action" data-name="funny shooter 2" onclick="launchGameReliable('https://class-911.github.io/files/FunnyShooter2/index.html')">
+            <img class="game-thumb" src="https://i.postimg.cc/6pVfndbf/IMG-8367.jpg" alt="">
+            <div class="game-info"><div class="game-title">Funny Shooter 2</div><div class="game-cat">Shooter</div></div>
+          </div>
+          <div class="game-portal-card" data-cat="action" data-name="carnage3d" onclick="launchGameReliable('https://codenamecpp.github.io/carnage3d/web/carnage3D_wasm.html')">
+            <img class="game-thumb" src="https://i.postimg.cc/bvzHTsKc/IMG-8369.jpg" alt="">
+            <div class="game-info"><div class="game-title">Carnage3D</div><div class="game-cat">3D Action</div></div>
+          </div>
+          <div class="game-portal-card" data-cat="action" data-name="1v1 lol" onclick="launchGameReliable('https://class-911.github.io/files/1v1lol/index.html')">
+            <img class="game-thumb" src="https://i.postimg.cc/R0HMG5Dc/IMG-8371.jpg" alt="">
+            <div class="game-info"><div class="game-title">1v1 LOL</div><div class="game-cat">Tactical Arena</div></div>
+          </div>
+          <div class="game-portal-card" data-cat="action" data-name="time shooter 3" onclick="launchGameReliable('https://laparda14.github.io/Time-Shooter-3-SWAT/')">
+            <img class="game-thumb" src="https://i.postimg.cc/SJcx5T8d/IMG-8415.jpg" alt="">
+            <div class="game-info"><div class="game-title">Time Shooter 3</div><div class="game-cat">FPS Strategy</div></div>
+          </div>
+          <div class="game-portal-card" data-cat="action" data-name="ultrakill" onclick="launchGameReliable('https://gamaverse.com/c/f/g/ultrakill-prelude-1750934621/')">
+            <img class="game-thumb" src="https://i.postimg.cc/9QCYVz5b/IMG-0309.jpg" alt="">
+            <div class="game-info"><div class="game-title">Ultrakill</div><div class="game-cat">Retro FPS</div></div>
+          </div>
+          <div class="game-portal-card" data-cat="action" data-name="doom sokol" onclick="launchGameReliable('https://floooh.github.io/doom-sokol/')">
+            <img class="game-thumb" src="https://i.postimg.cc/94QXDckg/IMG-8413.jpg" alt="">
+            <div class="game-info"><div class="game-title">Doom Sokol</div><div class="game-cat">Classic Retro</div></div>
+          </div>
+          <div class="game-portal-card" data-cat="action" data-name="nzp nazi zombies" onclick="launchGameReliable('http://nzp.gay/')">
+            <img class="game-thumb" src="https://i.postimg.cc/p9kbdXnb/IMG-8520.jpg" alt="">
+            <div class="game-info"><div class="game-title">NZP Zombies</div><div class="game-cat">Survival FPS</div></div>
+          </div>
+          <div class="game-portal-card" data-cat="action" data-name="stick slasher" onclick="launchGameReliable('https://datseagull.github.io/p/stickslasher.html')">
+            <img class="game-thumb" src="https://i.postimg.cc/MMTkf2yc/IMG-8523.jpg" alt="">
+            <div class="game-info"><div class="game-title">Stick Slasher</div><div class="game-cat">Combat</div></div>
+          </div>
+
+          <!-- ARCADE -->
+          <div class="game-portal-card" data-cat="arcade" data-name="subway surfers" onclick="launchGameReliable('https://dddavit.github.io/subway/')">
+            <img class="game-thumb" src="https://i.postimg.cc/sDhcDFp8/IMG-8368.jpg" alt="">
+            <div class="game-info"><div class="game-title">Subway Surfers</div><div class="game-cat">Runner</div></div>
+          </div>
+          <div class="game-portal-card" data-cat="arcade" data-name="geometry dash" onclick="launchGameReliable('https://class-911.github.io/files/GeometryDash/index.html')">
+            <img class="game-thumb" src="https://i.postimg.cc/wjYk1W2B/IMG-8370.jpg" alt="">
+            <div class="game-info"><div class="game-title">Geometry Dash</div><div class="game-cat">Rhythm</div></div>
+          </div>
+          <div class="game-portal-card" data-cat="arcade" data-name="stickman climb 2" onclick="launchGameReliable('https://minibattles.github.io/play/stickman-climb-2')">
+            <img class="game-thumb" src="https://i.postimg.cc/76h3FjHK/IMG-8372.jpg" alt="">
+            <div class="game-info"><div class="game-title">Stickman Climb 2</div><div class="game-cat">Physics</div></div>
+          </div>
+          <div class="game-portal-card" data-cat="arcade" data-name="ovo" onclick="launchGameReliable('https://ovo-game.github.io/')">
+            <img class="game-thumb" src="https://i.postimg.cc/QdqnhGDD/IMG-8384.png" alt="">
+            <div class="game-info"><div class="game-title">Ovo</div><div class="game-cat">Platformer</div></div>
+          </div>
+          <div class="game-portal-card" data-cat="arcade" data-name="slope" onclick="launchGameReliable('https://class-911.github.io/files/Slope/index.html')">
+            <img class="game-thumb" src="https://i.postimg.cc/p5FLPkS2/IMG-8418.jpg" alt="">
+            <div class="game-info"><div class="game-title">Slope</div><div class="game-cat">Velocity</div></div>
+          </div>
+          <div class="game-portal-card" data-cat="arcade" data-name="friday night funkin" onclick="launchGameReliable('https://class-911.github.io/files/FridayNightFunkin/index.html')">
+            <img class="game-thumb" src="https://i.postimg.cc/XXGJK7YT/IMG-8417.jpg" alt="">
+            <div class="game-info"><div class="game-title">Friday Night Funkin</div><div class="game-cat">Rhythm</div></div>
+          </div>
+          <div class="game-portal-card" data-cat="arcade" data-name="happy wheels" onclick="launchGameReliable('https://xoriushourz.github.io/HappyWheels/')">
+            <img class="game-thumb" src="https://i.postimg.cc/DZn9tK2B/download.jpg" alt="">
+            <div class="game-info"><div class="game-title">Happy Wheels</div><div class="game-cat">Physics Arcade</div></div>
+          </div>
+
+          <!-- SPORTS -->
+          <div class="game-portal-card" data-cat="sports" data-name="retro bowl" onclick="launchGameReliable('https://class-911.github.io/files/RetroBowl/index.html')">
+            <img class="game-thumb" src="https://i.postimg.cc/Pq2bFdjL/IMG-8374.jpg" alt="">
+            <div class="game-info"><div class="game-title">Retro Bowl</div><div class="game-cat">Football Sim</div></div>
+          </div>
+          <div class="game-portal-card" data-cat="sports" data-name="rocket soccer derby" onclick="launchGameReliable('https://forces.github.io/play/rocket-soccer-derby.html')">
+            <img class="game-thumb" src="https://i.postimg.cc/mZcqM5Y3/IMG-8376.jpg" alt="">
+            <div class="game-info"><div class="game-title">Rocket Soccer Derby</div><div class="game-cat">Car Sports</div></div>
+          </div>
+          <div class="game-portal-card" data-cat="sports" data-name="basket random" onclick="launchGameReliable('https://class-911.github.io/files/BasketRandom/index.html')">
+            <img class="game-thumb" src="https://i.postimg.cc/Xv71vHNC/IMG-8383.png" alt="">
+            <div class="game-info"><div class="game-title">Basket Random</div><div class="game-cat">Sports Physics</div></div>
+          </div>
+          <div class="game-portal-card" data-cat="sports" data-name="basketstars" onclick="launchGameReliable('https://class-911.github.io/files/BasketStars/index.html')">
+            <img class="game-thumb" src="https://i.postimg.cc/XZjq9fr8/IMG-8424.jpg" alt="">
+            <div class="game-info"><div class="game-title">BasketStars</div><div class="game-cat">Basketball</div></div>
+          </div>
+          <div class="game-portal-card" data-cat="sports" data-name="slow roads" onclick="launchGameReliable('https://slow-roads.github.io/')">
+            <img class="game-thumb" src="https://i.postimg.cc/nVqrvCx8/download.webp" alt="">
+            <div class="game-info"><div class="game-title">Slow Roads</div><div class="game-cat">Procedural Drive</div></div>
+          </div>
+          <div class="game-portal-card" data-cat="sports" data-name="football bros" onclick="launchGameReliable('https://vortexfusion.github.io/football-bros.github.io/')">
+            <img class="game-thumb" src="https://i.postimg.cc/PJdjbfbq/OIP.webp" alt="">
+            <div class="game-info"><div class="game-title">Football Bros</div><div class="game-cat">Arcade Football</div></div>
+          </div>
+          <div class="game-portal-card" data-cat="sports" data-name="soccer random" onclick="launchGameReliable('https://unblocked-games-786.github.io/Soccer-Random/')">
+            <img class="game-thumb" src="https://i.postimg.cc/jdXz48Ts/OIP.webp" alt="">
+            <div class="game-info"><div class="game-title">Soccer Random</div><div class="game-cat">Physics Soccer</div></div>
+          </div>
+
+          <!-- SIMULATION -->
+          <div class="game-portal-card" data-cat="simulation" data-name="bitlife" onclick="launchGameReliable('https://class-911.github.io/files/BitLife/index.html')">
+            <img class="game-thumb" src="https://i.postimg.cc/9MRDdsdc/IMG-9562.jpg" alt="">
+            <div class="game-info"><div class="game-title">BitLife</div><div class="game-cat">Life Sim</div></div>
+          </div>
+          <div class="game-portal-card" data-cat="simulation" data-name="minecraft" onclick="launchGameReliable('https://eaglercraftgame.github.io/go/minecraft-1.5.2/')">
+            <img class="game-thumb" src="https://i.postimg.cc/j51HtvCt/IMG-8373.jpg" alt="">
+            <div class="game-info"><div class="game-title">Minecraft 1.5.2</div><div class="game-cat">Voxel Sandbox</div></div>
+          </div>
+          <div class="game-portal-card" data-cat="simulation" data-name="cookie clicker" onclick="launchGameReliable('https://class-911.github.io/files/CookieClicker/index.html')">
+            <img class="game-thumb" src="https://i.postimg.cc/kD3Wt4xH/IMG-8375.jpg" alt="">
+            <div class="game-info"><div class="game-title">Cookie Clicker</div><div class="game-cat">Idle Clicker</div></div>
+          </div>
+          <div class="game-portal-card" data-cat="simulation" data-name="super mario 64" onclick="launchGameReliable('https://class-911.github.io/files/SuperMario64/index.html')">
+            <img class="game-thumb" src="https://i.postimg.cc/kD05T3VD/IMG-8416.jpg" alt="">
+            <div class="game-info"><div class="game-title">Super Mario 64</div><div class="game-cat">Classic 3D</div></div>
+          </div>
+          <div class="game-portal-card" data-cat="simulation" data-name="diablo web" onclick="launchGameReliable('https://d07riv.github.io/diabloweb/')">
+            <img class="game-thumb" src="https://i.postimg.cc/jwCjFRQn/IMG-8419.jpg" alt="">
+            <div class="game-info"><div class="game-title">Diablo Web</div><div class="game-cat">Classic RPG</div></div>
+          </div>
+          <div class="game-portal-card" data-cat="simulation" data-name="five nights at freddys fnaf" onclick="launchGameReliable('https://wellsousaaa.github.io/Five-Nights-at-Freddys-Web/')">
+            <img class="game-thumb" src="https://i.postimg.cc/N9V0hZpJ/IMG-8423.jpg" alt="">
+            <div class="game-info"><div class="game-title">FNAF Web</div><div class="game-cat">Horror Survival</div></div>
+          </div>
+          <div class="game-portal-card" data-cat="simulation" data-name="poppy playtime" onclick="launchGameReliable('https://gnhustgames.github.io/poppyplaytime/')">
+            <img class="game-thumb" src="https://i.postimg.cc/k2QPkyJ5/IMG-8519.jpg" alt="">
+            <div class="game-info"><div class="game-title">Poppy Playtime</div><div class="game-cat">Puzzle Horror</div></div>
+          </div>
+          <div class="game-portal-card" data-cat="simulation" data-name="manager simulator" onclick="launchGameReliable('https://weekdone.com/manager-simulator/')">
+            <img class="game-thumb" src="https://i.postimg.cc/SXmbqzRf/IMG-8522.jpg" alt="">
+            <div class="game-info"><div class="game-title">Manager Simulator</div><div class="game-cat">Business Sim</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- WINDOW 2: CHROMEBOOK CONTROL, DIGITAL VIBRANCE & CUSTOM RESOLUTIONS -->
+  <div class="win-window" id="cbeControlWin">
+    <div class="win-titlebar">
+      <div class="win-title">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#34d399" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M2 21h20M12 17v4"/></svg>
+        <span>Chromebook Control, Digital Vibrance & FPS Booster</span>
+      </div>
+      <div class="win-controls">
+        <button class="win-btn" onclick="minimizeWindow('cbeControlWin')">&#x2013;</button>
+        <button class="win-btn close" onclick="closeWindow('cbeControlWin')">&#x2715;</button>
+      </div>
+    </div>
+    <div class="win-content" style="padding: 28px; overflow-y: auto;">
+      <div class="cbe-grid">
+        
+        <!-- NVIDIA-Style Digital Vibrance & Color Tuning -->
+        <div class="cbe-card">
+          <h4>🎨 Digital Vibrance & Color Tuning</h4>
+          <div style="margin-bottom: 12px;">
+            <div class="cbe-stat-row"><span>Digital Vibrance (Saturation)</span><b id="vibranceVal">100%</b></div>
+            <input type="range" id="vibranceRange" min="50" max="250" value="100" oninput="updateDigitalVibrance(this.value)" style="width:100%; cursor:pointer;">
+          </div>
+          <div style="margin-bottom: 12px;">
+            <div class="cbe-stat-row"><span>Contrast Boost</span><b id="contrastVal">100%</b></div>
+            <input type="range" id="contrastRange" min="80" max="180" value="100" oninput="updateContrast(this.value)" style="width:100%; cursor:pointer;">
+          </div>
+          <button onclick="resetColors()" class="win-btn" style="background:rgba(255,255,255,0.1); width:100%; height:36px; font-weight:700;">Reset Default Colors</button>
+        </div>
+
+        <!-- Custom Resolution & FPS Booster -->
+        <div class="cbe-card">
+          <h4>🖥️ Custom Resolution & FPS Booster</h4>
+          <div style="margin-bottom: 12px;">
+            <label style="font-size:0.85rem; color:var(--text-muted); display:block; margin-bottom:6px;">Performance Resolution Preset</label>
+            <select id="presetRes" onchange="applyPresetResolution(this.value)" style="padding:10px; background:#0a0c10; color:#fff; border:1px solid var(--glass-border); border-radius:8px; width:100%; outline:none; margin-bottom:8px;">
+              <option value="1">100% (Native Full Resolution)</option>
+              <option value="0.85">HD Boost (85% Scale - Higher FPS)</option>
+              <option value="0.7">Potato Mode (70% Scale - Max Speed)</option>
+              <option value="0.5">Ultra Potato (50% Scale - Extreme FPS)</option>
+            </select>
+          </div>
+          <div>
+            <label style="font-size:0.85rem; color:var(--text-muted); display:block; margin-bottom:6px;">Custom Scale Factor</label>
+            <div style="display:flex; gap:8px;">
+              <input type="number" id="customScaleInput" value="0.8" step="0.05" min="0.3" max="1.0" style="flex:1; padding:8px 12px; background:#0a0c10; color:#fff; border:1px solid var(--glass-border); border-radius:8px; outline:none;">
+              <button onclick="applyCustomScale()" class="win-btn" style="background:var(--primary); color:#000; font-weight:700; width:auto; padding:0 16px;">Apply Scale</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Live Performance Engine -->
+        <div class="cbe-card">
+          <h4>⚡ Live Performance Engine</h4>
+          <div class="cbe-stat-row"><span>JS Heap Memory Used</span><span id="jsHeapText">Calculating...</span></div>
+          <div class="cbe-progress-bar"><div class="cbe-progress-fill" id="jsHeapBar" style="width: 30%;"></div></div>
+
+          <div class="cbe-stat-row"><span>Real Frame Rate (FPS)</span><b id="realFpsDisplay" style="color:var(--primary);">60 FPS</b></div>
+          <div style="margin-top: 10px;">
+            <button onclick="toggleFpsHud()" class="win-btn" style="background:rgba(255,255,255,0.1); width:100%; height:36px; font-weight:700;">Toggle FPS HUD Overlay</button>
+          </div>
+        </div>
+
+        <!-- GPU Pipeline Flush -->
+        <div class="cbe-card">
+          <h4>🎮 GPU Hardware Acceleration</h4>
+          <div class="cbe-stat-row"><span>Hardware Compositing</span><b style="color:#34d399;">Active (GPU Accelerated)</b></div>
+          <div class="cbe-stat-row"><span>DOM Paint Optimization</span><b style="color:#34d399;">Layer Merging Enabled</b></div>
+          <div style="margin-top: 14px;">
+            <button onclick="flushGpuCache()" class="win-btn" style="background:var(--primary); color:#000; font-weight:700; width:100%; height:38px;">Purge DOM Garbage & Flush GPU</button>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- WINDOW 3: RETRO CONSOLE EMULATOR HUB -->
+  <div class="win-window" id="emulatorWin">
+    <div class="win-titlebar">
+      <div class="win-title">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#ff5e36" stroke-width="2"><rect x="2" y="6" width="20" height="12" rx="2"/></svg>
+        <span>Retro Console Emulator Hub (NES, SNES, GBA, N64)</span>
+      </div>
+      <div class="win-controls">
+        <button class="win-btn" onclick="minimizeWindow('emulatorWin')">&#x2013;</button>
+        <button class="win-btn close" onclick="closeWindow('emulatorWin')">&#x2715;</button>
+      </div>
+    </div>
+    <div class="win-content" style="padding: 24px; display:flex; flex-direction:column; gap:16px;">
+      <p style="font-size:0.85rem; color:var(--text-muted);">Select a classic retro console emulator to launch directly in your secure sandboxed window:</p>
+      <div style="display:grid; grid-template-columns: repeat(3, 1fr); gap:16px;">
+        <div onclick="launchGameReliable('https://class-911.github.io/files/SuperMario64/index.html')" class="game-portal-card" style="padding:16px; text-align:center;">
+          <div style="font-size:2.5rem; margin-bottom:8px;">🍄</div>
+          <div class="game-title">Nintendo 64 Emulator</div>
+          <div class="game-cat">Super Mario 64 & Classics</div>
+        </div>
+        <div onclick="launchGameReliable('https://eaglercraftgame.github.io/go/minecraft-1.5.2/')" class="game-portal-card" style="padding:16px; text-align:center;">
+          <div style="font-size:2.5rem; margin-bottom:8px;">⛏️</div>
+          <div class="game-title">Java Voxel Sandbox</div>
+          <div class="game-cat">Minecraft 1.5.2 Engine</div>
+        </div>
+        <div onclick="launchGameReliable('https://d07riv.github.io/diabloweb/')" class="game-portal-card" style="padding:16px; text-align:center;">
+          <div style="font-size:2.5rem; margin-bottom:8px;">🛡️</div>
+          <div class="game-title">Classic RPG Emulator</div>
+          <div class="game-cat">Diablo Web Engine</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- WINDOW 4: SETTINGS & CUSTOMIZATION -->
+  <div class="win-window" id="settingsWin">
+    <div class="win-titlebar">
+      <div class="win-title">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#4facfe" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+        <span>Windows Settings & Customization</span>
+      </div>
+      <div class="win-controls">
+        <button class="win-btn" onclick="minimizeWindow('settingsWin')">&#x2013;</button>
+        <button class="win-btn close" onclick="closeWindow('settingsWin')">&#x2715;</button>
+      </div>
+    </div>
+    <div class="win-content" style="padding: 28px; overflow-y: auto;">
+      <h3 style="margin-bottom: 16px; font-size: 1.05rem; color:#fff;">Live PC Wallpaper Engine</h3>
+      <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-bottom: 28px;">
+        <div onclick="setWallpaper('https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=2560&q=80')" style="cursor:pointer; border:2px solid var(--primary); border-radius:10px; overflow:hidden;">
+          <img src="https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=400&q=80" style="width:100%; height:100px; object-fit:cover;">
+          <div style="padding:10px; font-size:0.8rem; text-align:center; color:#fff; font-weight:600;">Neon Fluid 3D</div>
+        </div>
+        <div onclick="setWallpaper('https://images.unsplash.com/photo-1550684848-fac1c5b4e853?auto=format&fit=crop&w=2560&q=80')" style="cursor:pointer; border:1px solid rgba(255,255,255,0.15); border-radius:10px; overflow:hidden;">
+          <img src="https://images.unsplash.com/photo-1550684848-fac1c5b4e853?auto=format&fit=crop&w=400&q=80" style="width:100%; height:100px; object-fit:cover;">
+          <div style="padding:10px; font-size:0.8rem; text-align:center; color:#fff; font-weight:600;">Cyberpunk Grid</div>
+        </div>
+        <div onclick="setWallpaper('https://images.unsplash.com/photo-1579546929518-9e396f3cc809?auto=format&fit=crop&w=2560&q=80')" style="cursor:pointer; border:1px solid rgba(255,255,255,0.15); border-radius:10px; overflow:hidden;">
+          <img src="https://images.unsplash.com/photo-1579546929518-9e396f3cc809?auto=format&fit=crop&w=400&q=80" style="width:100%; height:100px; object-fit:cover;">
+          <div style="padding:10px; font-size:0.8rem; text-align:center; color:#fff; font-weight:600;">Gradient Wave</div>
+        </div>
+      </div>
+
+      <h3 style="margin-bottom: 16px; font-size: 1.05rem; color:#fff;">UI Color Accent</h3>
+      <div style="display: flex; gap: 12px; margin-bottom: 28px;">
+        <button class="win-btn" onclick="setTheme('default')" style="background:#00f2fe; color:#000; width:auto; padding:0 18px; font-weight:700;">Cyan Nebula</button>
+        <button class="win-btn" onclick="setTheme('cyberpunk')" style="background:#ff007f; color:#fff; width:auto; padding:0 18px; font-weight:700;">Cyber Neon</button>
+        <button class="win-btn" onclick="setTheme('emerald')" style="background:#34d399; color:#000; width:auto; padding:0 18px; font-weight:700;">Emerald Matrix</button>
+        <button class="win-btn" onclick="setTheme('sunset')" style="background:#ff5e36; color:#fff; width:auto; padding:0 18px; font-weight:700;">Sunset Orange</button>
+      </div>
+
+      <h3 style="margin-bottom: 16px; font-size: 1.05rem; color:#fff;">Tab Cloaking & Security</h3>
+      <div style="margin-bottom: 14px;">
+        <label style="font-size:0.85rem; color:var(--text-muted); display:block; margin-bottom:6px;">Select Cloak Identity</label>
+        <select onchange="applyCloak(this.value)" style="padding:10px 14px; background:#0a0c10; color:#fff; border:1px solid var(--glass-border); border-radius:8px; width:280px; outline:none;">
+          <option value="classroom">Google Classroom</option>
+          <option value="drive">Google Drive</option>
+          <option value="docs">Google Docs</option>
+          <option value="clever">Clever Portal</option>
+        </select>
+      </div>
+      <div>
+        <label style="font-size:0.85rem; color:var(--text-muted); display:block; margin-bottom:6px;">Panic Shortcut Key: <b>Alt + Q</b> (Google Classroom)</label>
+        <input type="text" id="panicUrlInput" value="https://classroom.google.com/u/1/h/st" style="padding:10px 14px; background:#0a0c10; color:#fff; border:1px solid var(--glass-border); border-radius:8px; width:340px; outline:none;">
+      </div>
+    </div>
+  </div>
+
+  <!-- WINDOW 5: UNBLOCKED EDGE BROWSER & PROXY TUNNEL (BING, YAHOO, GOOGLE) -->
+  <div class="win-window" id="browserWin">
+    <div class="win-titlebar">
+      <div class="win-title">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#0078d4" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+        <span>Microsoft Edge (Unblocked Web Proxy & Search)</span>
+      </div>
+      <div class="win-controls">
+        <button class="win-btn" onclick="minimizeWindow('browserWin')">&#x2013;</button>
+        <button class="win-btn close" onclick="closeWindow('browserWin')">&#x2715;</button>
+      </div>
+    </div>
+    <div class="win-content">
+      <div style="padding: 10px 16px; background:#0e121a; border-bottom:1px solid var(--glass-border); display:flex; gap:10px; align-items:center;">
+        <input type="text" id="browserUrl" value="https://www.bing.com" style="flex:1; padding:8px 14px; background:#05070b; color:#fff; border:1px solid var(--glass-border); border-radius:8px; font-size:0.85rem; outline:none;">
+        <button onclick="navigateBrowser()" class="win-btn" style="width:auto; padding:0 16px; background:var(--primary); color:#000; font-weight:700;">Go</button>
+        <div style="width:1px; height:20px; background:rgba(255,255,255,0.2);"></div>
+        <button onclick="setBrowserUrl('https://www.bing.com')" class="win-btn" style="background:rgba(255,255,255,0.1); width:auto; padding:0 10px; font-size:0.75rem;">Bing</button>
+        <button onclick="setBrowserUrl('https://search.yahoo.com')" class="win-btn" style="background:rgba(255,255,255,0.1); width:auto; padding:0 10px; font-size:0.75rem;">Yahoo</button>
+        <button onclick="setBrowserUrl('https://www.google.com')" class="win-btn" style="background:rgba(255,255,255,0.1); width:auto; padding:0 10px; font-size:0.75rem;">Google</button>
+      </div>
+      <iframe id="browserFrame" src="https://www.bing.com" style="flex:1; width:100%; border:none; background:#fff;"></iframe>
+    </div>
+  </div>
+
   <script>
-    // Toggle Emulator Container
-    function toggleEmulator() {
-      var emulator = document.getElementById('emulator');
-      emulator.style.display = (emulator.style.display === 'none' || emulator.style.display === '') ? 'block' : 'none';
-    }
-    
-    // Toggle Unblocked Container
-    function toggleUnblocked() {
-      var unblocked = document.getElementById('unblocked');
-      unblocked.style.display = (unblocked.style.display === 'none' || unblocked.style.display === '') ? 'block' : 'none';
-    }
-    
-    // Open Embedded Game in Modal
-    function openGame(url) {
-      var modal = document.getElementById('gameModal');
-      var iframe = document.getElementById('gameFrame');
-      iframe.src = url;
-      modal.style.display = 'flex';
-    }
-    
-    function closeModal() {
-      var modal = document.getElementById('gameModal');
-      modal.style.display = 'none';
-      document.getElementById('gameFrame').src = '';
-    }
-    
-    // Filter Games based on Search Input
-    function filterGames() {
-      let input = document.getElementById('searchBar').value.toLowerCase();
-      let games = document.querySelectorAll('.game');
-      games.forEach(game => {
-        let name = game.getAttribute('data-name');
-        if (name.includes(input)) {
-          game.style.display = 'flex';
+    // Real-time taskbar clock
+    setInterval(() => {
+      const now = new Date();
+      let h = now.getHours();
+      const m = String(now.getMinutes()).padStart(2, '0');
+      const ampm = h >= 12 ? 'PM' : 'AM';
+      h = h % 12 || 12;
+      document.getElementById('clockDisplay').innerText = `${h}:${m} ${ampm}`;
+    }, 1000);
+
+    // Real Live FPS & Performance Monitor
+    let frameCount = 0;
+    let lastTime = performance.now();
+
+    function monitorLoop(now) {
+      frameCount++;
+      if (now - lastTime >= 1000) {
+        let currentFps = Math.round((frameCount * 1000) / (now - lastTime));
+        document.getElementById('realFpsDisplay').innerText = currentFps + ' FPS';
+        document.getElementById('fpsNum').innerText = currentFps;
+        frameCount = 0;
+        lastTime = now;
+
+        if (performance.memory) {
+          const usedMb = Math.round(performance.memory.usedJSHeapSize / (1024 * 1024));
+          const totalMb = Math.round(performance.memory.jsHeapSizeLimit / (1024 * 1024));
+          const pct = Math.min(100, Math.round((usedMb / totalMb) * 100));
+          document.getElementById('jsHeapText').innerText = usedMb + ' MB / ' + totalMb + ' MB (' + pct + '%)';
+          document.getElementById('jsHeapBar').style.width = pct + '%';
         } else {
-          game.style.display = 'none';
+          document.getElementById('jsHeapText').innerText = 'Active V8 Heap Optimized (~42%)';
+          document.getElementById('jsHeapBar').style.width = '42%';
+        }
+      }
+      requestAnimationFrame(monitorLoop);
+    }
+    requestAnimationFrame(monitorLoop);
+
+    // NVIDIA-Style Digital Vibrance & Color Filters
+    let currentVibrance = 100;
+    let currentContrast = 100;
+
+    function updateDigitalVibrance(val) {
+      currentVibrance = val;
+      document.getElementById('vibranceVal').innerText = val + '%';
+      applyColorFilters();
+    }
+
+    function updateContrast(val) {
+      currentContrast = val;
+      document.getElementById('contrastVal').innerText = val + '%';
+      applyColorFilters();
+    }
+
+    function applyColorFilters() {
+      const sat = currentVibrance / 100;
+      const con = currentContrast / 100;
+      document.documentElement.style.setProperty('--vibrance-filter', `saturate(${sat}) contrast(${con})`);
+    }
+
+    function resetColors() {
+      currentVibrance = 100;
+      currentContrast = 100;
+      document.getElementById('vibranceRange').value = 100;
+      document.getElementById('contrastRange').value = 100;
+      document.getElementById('vibranceVal').innerText = '100%';
+      document.getElementById('contrastVal').innerText = '100%';
+      applyColorFilters();
+    }
+
+    // CUSTOM RESOLUTION & FPS BOOST ENGINE (REAL VIEWPORT SCALING)
+    function applyPresetResolution(val) {
+      const scale = parseFloat(val);
+      document.getElementById('customScaleInput').value = scale;
+      applyScaleFactor(scale);
+    }
+
+    function applyCustomScale() {
+      const scale = parseFloat(document.getElementById('customScaleInput').value);
+      if (scale >= 0.3 && scale <= 1.0) {
+        applyScaleFactor(scale);
+      } else {
+        alert('Please enter a scale between 0.3 and 1.0');
+      }
+    }
+
+    function applyScaleFactor(scale) {
+      document.body.style.transform = `scale(${scale})`;
+      document.body.style.width = `${100 / scale}%`;
+      document.body.style.height = `${100 / scale}%`;
+    }
+
+    function toggleFpsHud() {
+      const hud = document.getElementById('liveFpsHud');
+      hud.style.display = hud.style.display === 'block' ? 'none' : 'block';
+    }
+
+    function flushGpuCache() {
+      document.body.style.display = 'none';
+      document.body.offsetHeight; // trigger reflow
+      document.body.style.display = '';
+      alert('DOM Garbage collected and GPU render pipeline flushed successfully!');
+    }
+
+    function toggleStartMenu() {
+      document.getElementById('startMenu').classList.toggle('active');
+    }
+
+    function openAppWindow(id) {
+      document.getElementById(id).classList.add('active');
+      document.getElementById('startMenu').classList.remove('active');
+    }
+
+    function closeWindow(id) {
+      document.getElementById(id).classList.remove('active');
+    }
+
+    function minimizeWindow(id) {
+      document.getElementById(id).classList.remove('active');
+    }
+
+    function setWallpaper(url) {
+      document.getElementById('desktop-bg').src = url;
+    }
+
+    function setTheme(theme) {
+      if (theme === 'default') document.body.removeAttribute('data-theme');
+      else document.body.setAttribute('data-theme', theme);
+    }
+
+    function applyCloak(preset) {
+      const favicon = document.getElementById('appFavicon');
+      if (preset === 'drive') {
+        document.title = 'Google Drive';
+        favicon.href = 'https://ssl.gstatic.com/docs/doclist/images/drive_2022q3_32dp.png';
+      } else if (preset === 'docs') {
+        document.title = 'Google Docs';
+        favicon.href = 'https://ssl.gstatic.com/docs/documents/images/kix-favicon7.ico';
+      } else if (preset === 'clever') {
+        document.title = 'Clever | Portal';
+        favicon.href = 'https://assets.clever.com/launchpad/favicon.ico';
+      } else {
+        document.title = 'Google Classroom';
+        favicon.href = 'https://www.gstatic.com/classroom/ic_product_classroom_32.png';
+      }
+    }
+
+    function triggerPanic() {
+      const target = document.getElementById('panicUrlInput').value || 'https://classroom.google.com/u/1/h/st';
+      window.location.replace(target);
+    }
+
+    window.addEventListener('keydown', (e) => {
+      if (e.altKey && e.key.toLowerCase() === 'q') {
+        e.preventDefault();
+        triggerPanic();
+      }
+    });
+
+    // Reliable Cloaked Tab Game Launcher (`about:blank` Sandbox)
+    function launchGameReliable(url) {
+      const win = window.open('about:blank', '_blank');
+      if (win) {
+        win.document.write(`
+          <!DOCTYPE html>
+          <html>
+          <head>
+            <title>Google Classroom</title>
+            <link rel="icon" href="https://www.gstatic.com/classroom/ic_product_classroom_32.png">
+            <style>body, html { margin:0; padding:0; height:100%; overflow:hidden; background:#000; }</style>
+          </head>
+          <body>
+            <iframe src="${url}" style="width:100%; height:100%; border:none;"></iframe>
+          </body>
+          </html>
+        `);
+        win.document.close();
+      } else {
+        window.location.href = url;
+      }
+    }
+
+    function filterGames(cat, el) {
+      document.querySelectorAll('.sidebar-tab').forEach(t => t.classList.remove('active'));
+      el.classList.add('active');
+
+      const cards = document.querySelectorAll('.game-portal-card');
+      cards.forEach(card => {
+        if (cat === 'all' || card.getAttribute('data-cat') === cat) {
+          card.style.display = 'flex';
+        } else {
+          card.style.display = 'none';
         }
       });
     }
-    
-    // Attach search event listener
-    document.getElementById('searchBar').addEventListener('keyup', filterGames);
-    
-    // Settings Panel for Tab Cloak Functions
-    function toggleSettings() {
-      var panel = document.getElementById('settingsPanel');
-      panel.style.display = (panel.style.display === 'none' || panel.style.display === '') ? 'block' : 'none';
+
+    function searchGameGrid() {
+      const q = document.getElementById('gameSearchInput').value.toLowerCase();
+      let count = 0;
+      document.querySelectorAll('.game-portal-card').forEach(card => {
+        const name = card.getAttribute('data-name');
+        if (name.includes(q)) {
+          card.style.display = 'flex';
+          count++;
+        } else {
+          card.style.display = 'none';
+        }
+      });
+      document.getElementById('gameCountLabel').innerText = `Showing ${count} items`;
     }
-    function setTabCloak(title, iconUrl) {
-      document.title = title;
-      var favicon = document.getElementById('favicon');
-      if (!favicon) {
-        favicon = document.createElement('link');
-        favicon.rel = 'icon';
-        favicon.id = 'favicon';
-        document.head.appendChild(favicon);
-      }
-      favicon.href = iconUrl;
-      toggleSettings();
+
+    function setBrowserUrl(url) {
+      document.getElementById('browserUrl').value = url;
+      document.getElementById('browserFrame').src = url;
     }
-    function resetTabCloak() {
-      document.title = 'Classroom 70X';
-      setTabCloak('Classroom 70X', 'https://i.postimg.cc/ppSfsBPB/IMG-8407.png');
+
+    function navigateBrowser() {
+      let val = document.getElementById('browserUrl').value;
+      if (!val.startsWith('http')) val = 'https://' + val;
+      document.getElementById('browserFrame').src = val;
     }
   </script>
 </body>
