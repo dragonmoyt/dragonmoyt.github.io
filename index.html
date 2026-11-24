@@ -1,8 +1,3 @@
-
-
-
-
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -577,6 +572,7 @@
       <div style="font-size:0.7rem; font-weight:700; color:var(--text-secondary); text-transform:uppercase; letter-spacing:0.8px;">Pinned Apps</div>
       <div class="start-pinned-grid" id="startPinnedGrid">
         <button class="start-tile" onclick="openWin('gtaGateWin'); closeStartMenu();"><img src="https://iili.io/oKuP3rJ.webp" alt="" /><span>GTA 6</span></button>
+        <button class="start-tile" onclick="openWin('amandaWin'); closeStartMenu();"><img src="https://iili.io/ofTn3gV.webp" alt="" /><span>Amanda the Adventurer</span></button>
         <button class="start-tile" onclick="openWin('launcherWin'); closeStartMenu();"><span>🚀</span><span>Launchers</span></button>
         <button class="start-tile" onclick="openWin('psWin'); closeStartMenu();"><span>💻</span><span>PowerShell</span></button>
         <button class="start-tile" onclick="openWin('taskMgrWin'); closeStartMenu();"><span>📈</span><span>Task Manager</span></button>
@@ -607,6 +603,7 @@
           </svg>
         </button>
         <button class="tb-btn" id="tb-gtaGateWin" title="GTA 6 Installer & Cinema" onclick="toggleWindow('gtaGateWin')"><img src="https://iili.io/oKuP3rJ.webp" alt="" /></button>
+        <button class="tb-btn" id="tb-amandaWin" title="Amanda the Adventurer" onclick="toggleWindow('amandaWin')"><img src="https://iili.io/ofTn3gV.webp" alt="" /></button>
         <button class="tb-btn" id="tb-launcherWin" title="Launchers (Download Required)" onclick="toggleWindow('launcherWin')"><span>🚀</span></button>
         <button class="tb-btn" id="tb-psWin" title="PowerShell" onclick="toggleWindow('psWin')"><span>💻</span></button>
         <button class="tb-btn" id="tb-taskMgrWin" title="Task Manager" onclick="toggleWindow('taskMgrWin')"><span>📈</span></button>
@@ -667,6 +664,28 @@
           </div>
         </div>
       </div>
+    </section>
+
+    <section class="os-window" id="amandaWin" style="width:min(740px, calc(100vw - 24px)); height:auto; max-height:calc(100vh - 120px);">
+      <div class="win-titlebar">
+        <div class="win-title-left"><img src="https://iili.io/ofTn3gV.webp" alt="" /><span>Amanda the Adventurer</span></div>
+        <div class="win-caption-btns">
+          <button class="cap-btn" onclick="minimizeWin('amandaWin')">&#x2013;</button>
+          <button class="cap-btn" onclick="toggleMaximize('amandaWin')">&#x2610;</button>
+          <button class="cap-btn close" onclick="closeWin('amandaWin')">&#x2715;</button>
+        </div>
+      </div>
+      <div class="win-body"><div class="pane-scroll" style="display:flex;flex-direction:column;gap:12px;">
+        <div class="gta-banner-hero" style="background:linear-gradient(125deg,rgba(133,38,38,.48),#101318,rgba(127,93,35,.28));">
+          <div style="display:flex;align-items:center;gap:14px;">
+            <img src="https://iili.io/ofTn3gV.webp" alt="Amanda the Adventurer" style="width:100px;height:100px;object-fit:cover;border-radius:10px;border:1px solid var(--win-border-strong);" />
+            <div><span class="badge ok">Ready to Play</span><h3 style="margin:8px 0;">Amanda the Adventurer</h3><div style="font-size:.75rem;color:var(--text-secondary);">Horror • Browser Game</div></div>
+          </div>
+        </div>
+        <div class="setting-card"><div class="setting-row"><strong>Launch game</strong><span>No download required</span></div>
+          <a class="btn nvidia" href="https://dragonmoyt.github.io/dragon8.github.io/" target="_blank" rel="noopener noreferrer" style="text-align:center;text-decoration:none;">▶ Play Amanda the Adventurer</a>
+        </div>
+      </div></div>
     </section>
 
     <!-- FULLSCREEN CINEMA OVERLAY FOR GTA 6 TRAILER -> FADE INTO GAME -->
@@ -890,6 +909,7 @@ SIMULATOR ONLY: process commands affect this desktop demo, never Windows.</div>
         <nav class="app-nav" id="gameCatNav">
           <button class="nav-item active" data-cat="all" onclick="setGameCategory('all', this)">All Titles</button>
           <button class="nav-item" data-cat="action" onclick="setGameCategory('action', this)">GTA 6 & Action</button>
+          <button class="nav-item" data-cat="horror" onclick="setGameCategory('horror', this)">Horror Games</button>
           <button class="nav-item" data-cat="sports" onclick="setGameCategory('sports', this)">Basketball & Sports</button>
           <button class="nav-item" data-cat="arcade" onclick="setGameCategory('arcade', this)">Arcade & Driving</button>
           <button class="nav-item" data-cat="apps" onclick="setGameCategory('apps', this)">Cloud & Apps</button>
@@ -1137,6 +1157,7 @@ SIMULATOR ONLY: process commands affect this desktop demo, never Windows.</div>
     ];
 
     const GAMES = [
+      { name: "Amanda the Adventurer", cat: "horror", tag: "Ready to Play", img: "https://iili.io/ofTn3gV.webp", url: "https://dragonmoyt.github.io/dragon8.github.io/" },
       { name: "GTA 6", cat: "action", tag: "GTA 6", gta: true, img: "https://iili.io/oKuP3rJ.webp", url: GTA6_GAME_URL },
       { name: "BasketballStars", cat: "sports", tag: "Sports", img: "https://i.postimg.cc/XZjq9fr8/IMG-8424.jpg", url: "https://class-911.github.io/files/BasketStars/index.html" },
       { name: "Basket Random", cat: "sports", tag: "Physics", img: "https://i.postimg.cc/Xv71vHNC/IMG-8383.png", url: "https://class-911.github.io/files/BasketRandom/index.html" },
@@ -1197,7 +1218,8 @@ SIMULATOR ONLY: process commands affect this desktop demo, never Windows.</div>
       { id: "app-games", label: "Game Hub", winId: "gameHubWin", img: "https://i.postimg.cc/9MRDdsdc/IMG-9562.jpg" },
       { id: "app-settings", label: "Settings", winId: "settingsWin", emoji: "⚙️" },
       { id: "app-nvidia", label: "NVIDIA Panel", winId: "nvidiaWin", emoji: "◈", color: "#76b900" },
-      { id: "app-gif", label: "Upload GIF", winId: "personalizeWin", emoji: "🎨" }
+      { id: "app-gif", label: "Upload GIF", winId: "personalizeWin", emoji: "🎨" },
+      { id: "app-amanda", label: "Amanda the Adventurer", winId: "amandaWin", img: "https://iili.io/ofTn3gV.webp" }
     ];
 
     let state = {
