@@ -675,17 +675,18 @@
           <button class="cap-btn close" onclick="closeWin('amandaWin')">&#x2715;</button>
         </div>
       </div>
-      <div class="win-body"><div class="pane-scroll" style="display:flex;flex-direction:column;gap:12px;">
-        <div class="gta-banner-hero" style="background:linear-gradient(125deg,rgba(133,38,38,.48),#101318,rgba(127,93,35,.28));">
-          <div style="display:flex;align-items:center;gap:14px;">
-            <img src="https://iili.io/ofTn3gV.webp" alt="Amanda the Adventurer" style="width:100px;height:100px;object-fit:cover;border-radius:10px;border:1px solid var(--win-border-strong);" />
-            <div><span class="badge ok">Ready to Play</span><h3 style="margin:8px 0;">Amanda the Adventurer</h3><div style="font-size:.75rem;color:var(--text-secondary);">Horror • Browser Game</div></div>
-          </div>
+      <div class="win-body"><div class="pane-scroll" id="amandaInstall"></div></div>
+    </section>
+<section class="os-window" id="codWin" style="width:min(740px, calc(100vw - 24px)); height:auto; max-height:calc(100vh - 120px);">
+      <div class="win-titlebar">
+        <div class="win-title-left"><img src="https://i.postimg.cc/p9kbdXnb/IMG-8520.jpg" alt="" /><span>Call of Duty Zombies</span></div>
+        <div class="win-caption-btns">
+          <button class="cap-btn" onclick="minimizeWin('codWin')">&#x2013;</button>
+          <button class="cap-btn" onclick="toggleMaximize('codWin')">&#x2610;</button>
+          <button class="cap-btn close" onclick="closeWin('codWin')">&#x2715;</button>
         </div>
-        <div class="setting-card"><div class="setting-row"><strong>Launch game</strong><span>No download required</span></div>
-          <a class="btn nvidia" href="https://dragonmoyt.github.io/dragon8.github.io/" target="_blank" rel="noopener noreferrer" style="text-align:center;text-decoration:none;">▶ Play Amanda the Adventurer</a>
-        </div>
-      </div></div>
+      </div>
+      <div class="win-body"><div class="pane-scroll" id="codInstall"></div></div>
     </section>
 
     <!-- FULLSCREEN CINEMA OVERLAY FOR GTA 6 TRAILER -> FADE INTO GAME -->
@@ -1157,7 +1158,7 @@ SIMULATOR ONLY: process commands affect this desktop demo, never Windows.</div>
     ];
 
     const GAMES = [
-      { name: "Amanda the Adventurer", cat: "horror", tag: "Ready to Play", img: "https://iili.io/ofTn3gV.webp", url: "https://dragonmoyt.github.io/dragon8.github.io/" },
+      { name: "Amanda the Adventurer", cat: "horror", tag: "Download Required", img: "https://iili.io/ofTn3gV.webp", url: "https://dragonmoyt.github.io/dragon8.github.io/" },
       { name: "GTA 6", cat: "action", tag: "GTA 6", gta: true, img: "https://iili.io/oKuP3rJ.webp", url: GTA6_GAME_URL },
       { name: "BasketballStars", cat: "sports", tag: "Sports", img: "https://i.postimg.cc/XZjq9fr8/IMG-8424.jpg", url: "https://class-911.github.io/files/BasketStars/index.html" },
       { name: "Basket Random", cat: "sports", tag: "Physics", img: "https://i.postimg.cc/Xv71vHNC/IMG-8383.png", url: "https://class-911.github.io/files/BasketRandom/index.html" },
@@ -1185,7 +1186,7 @@ SIMULATOR ONLY: process commands affect this desktop demo, never Windows.</div>
       { name: "Scratch Project", cat: "apps", tag: "Creative", img: "https://i.postimg.cc/sBTXmMSR/IMG-8420.jpg", url: "https://scratch.mit.edu/projects/508340998/fullscreen/" },
       { name: "Five Nights at Freddy's Web", cat: "action", tag: "Horror", img: "https://i.postimg.cc/N9V0hZpJ/IMG-8423.jpg", url: "https://wellsousaaa.github.io/Five-Nights-at-Freddys-Web/" },
       { name: "Poppy Playtime", cat: "action", tag: "Horror", img: "https://i.postimg.cc/k2QPkyJ5/IMG-8519.jpg", url: "https://gnhustgames.github.io/poppyplaytime/" },
-      { name: "NZP", cat: "action", tag: "Zombies", img: "https://i.postimg.cc/p9kbdXnb/IMG-8520.jpg", url: "http://nzp.gay/" },
+      { name: "Call of Duty Zombies (NZP)", cat: "action", tag: "Zombies", img: "https://i.postimg.cc/p9kbdXnb/IMG-8520.jpg", url: "https://dragonmoyt.github.io/callofdutywarzone/" },
       { name: "Manager Simulator", cat: "apps", tag: "Simulation", img: "https://i.postimg.cc/SXmbqzRf/IMG-8522.jpg", url: "https://weekdone.com/manager-simulator/" },
       { name: "Stick Slasher", cat: "action", tag: "Action", img: "https://i.postimg.cc/MMTkf2yc/IMG-8523.jpg", url: "https://datseagull.github.io/p/stickslasher.html" },
       { name: "Spotify", cat: "apps", tag: "Music", img: "https://i.postimg.cc/CLF3v0v1/download.png", url: "https://classroom70x.github.io/literate-doodle/" },
@@ -1222,6 +1223,8 @@ SIMULATOR ONLY: process commands affect this desktop demo, never Windows.</div>
       { id: "app-amanda", label: "Amanda the Adventurer", winId: "amandaWin", img: "https://iili.io/ofTn3gV.webp" }
     ];
 
+    GAMES.forEach((g,i) => { if (!g.gta && i !== 0) DEFAULT_APPS.push({id:'game-'+i,label:g.name,img:g.img,gameIndex:i}); });
+    LAUNCHERS.forEach(l => DEFAULT_APPS.push({id:'launcher-'+l.id,label:l.name,img:l.img,launcherUrl:l.url}));
     let state = {
       theme: "win11-dark",
       wallpaper: "https://media0.giphy.com/media/uQoRcPz7qNlmXhNRAq/giphy.gif",
@@ -1431,7 +1434,7 @@ SIMULATOR ONLY: process commands affect this desktop demo, never Windows.</div>
       const q = (document.getElementById("launcherSearchInput")?.value || "").trim().toLowerCase();
       const list = LAUNCHERS.filter(l => !q || l.name.toLowerCase().includes(q) || l.badge.toLowerCase().includes(q));
       document.getElementById("launcherGrid").innerHTML = list.map(l => {
-        const isDl = !!state.downloadedLaunchers[l.id];
+        const isDl = true;
         return `
           <div class="media-card">
             <img src="${l.img}" alt="${escapeHtml(l.name)}" />
@@ -1442,7 +1445,7 @@ SIMULATOR ONLY: process commands affect this desktop demo, never Windows.</div>
                 <span class="badge ${isDl ? "ok" : "gta"}">${isDl ? "Downloaded" : "Not Downloaded"}</span>
               </div>
               <div style="display:flex; gap:6px; margin-top:4px;">
-                <button class="btn primary" style="flex:1; padding:5px 8px;" onclick="downloadLauncher('${l.id}')">${isDl ? "Re-Download" : "Download"}</button>
+                <button class="btn primary" style="flex:1; padding:5px 8px;" disabled>${isDl ? "Ready" : "Download"}</button>
                 <button class="btn nvidia" style="flex:1; padding:5px 8px;" ${isDl ? "" : "disabled"} onclick="openDownloadedLauncher('${l.id}')">${isDl ? "Launch" : "Locked"}</button>
               </div>
             </div>
@@ -1465,7 +1468,7 @@ SIMULATOR ONLY: process commands affect this desktop demo, never Windows.</div>
 
     function openDownloadedLauncher(id) {
       const l = LAUNCHERS.find(x => x.id === id);
-      if (!l || !state.downloadedLaunchers[id]) return showToast("Download the launcher first!");
+      if (!l) return showToast("Download the launcher first!");
       launchCloakedUrl(l.url, l.name);
     }
 
@@ -1736,9 +1739,11 @@ SIMULATOR ONLY: process commands affect this desktop demo, never Windows.</div>
     function clearNotepad() { document.getElementById("notepadArea").value = ""; updateNotepadState(); }
 
     /* Desktop, Windows, Remote Play, Games, NVIDIA, Personalization */
-    function getDefaultIconPos(i) { const scale=(state.iconSize||100)/100; const cols=scale>1.5?4:1; const gapX=scale>1.5?104*scale:98; const gapY=scale>1.5?100*scale:98; return scale>1.5?{x:16+(i%cols)*gapX,y:12+Math.floor(i/cols)*gapY}:{x:16+Math.floor(i/6)*gapX,y:12+(i%6)*gapY}; }
+    function getDefaultIconPos(i) { const canvas=document.getElementById('desktopCanvas'); const scale=Math.max(1,(state.iconSize||100)/100); const gapX=98*scale,gapY=98*scale; const rows=Math.max(1,Math.floor((canvas.clientHeight-12)/gapY)); const cols=Math.max(1,Math.floor((canvas.clientWidth-16)/gapX)); return {x:8+(Math.floor(i/rows)%cols)*gapX,y:8+(i%rows)*gapY+Math.floor(i/(rows*cols))*rows*gapY}; }
+    function openDesktopApp(app) { if(app.gameIndex!==undefined) openCatalogGame(app.gameIndex); else if(app.launcherUrl) window.open(app.launcherUrl,'_blank','noopener,noreferrer'); }
+
     function renderDesktopIcons() {
-      const canvas = document.getElementById("desktopCanvas"); canvas.innerHTML = "";
+      const canvas = document.getElementById("desktopCanvas"); canvas.innerHTML = ""; canvas.style.overflow = "auto";
       DEFAULT_APPS.forEach((app, idx) => {
         const pos = state.iconPositions[app.id] || getDefaultIconPos(idx);
         const el = document.createElement("div"); el.className = "desktop-icon";
@@ -1749,7 +1754,7 @@ SIMULATOR ONLY: process commands affect this desktop demo, never Windows.</div>
         el.addEventListener("dblclick", () => {
           if (app.openPair) { openWin("remoteWin"); switchRemoteTab("pair"); }
           else if (app.openPlay) { openWin("remoteWin"); switchRemoteTab("play"); }
-          else if (app.winId) openWin(app.winId);
+          else if (app.winId) openWin(app.winId); else openDesktopApp(app);
         });
         el.addEventListener("click", (e) => { e.stopPropagation(); document.querySelectorAll(".desktop-icon").forEach(d => d.classList.remove("selected")); el.classList.add("selected"); });
         canvas.appendChild(el);
@@ -1776,7 +1781,7 @@ SIMULATOR ONLY: process commands affect this desktop demo, never Windows.</div>
           if (!moved && e.pointerType === "touch") {
             if (app.openPair) { openWin("remoteWin"); switchRemoteTab("pair"); }
             else if (app.openPlay) { openWin("remoteWin"); switchRemoteTab("play"); }
-            else if (app.winId) openWin(app.winId);
+            else if (app.winId) openWin(app.winId); else openDesktopApp(app);
           }
         };
         el.addEventListener("pointermove", move); el.addEventListener("pointerup", up);
@@ -1861,8 +1866,8 @@ SIMULATOR ONLY: process commands affect this desktop demo, never Windows.</div>
       const q = (document.getElementById("gameSearchInput")?.value || "").trim().toLowerCase();
       const list = GAMES.filter(g => (activeCategory === "all" || g.cat === activeCategory) && (!q || g.name.toLowerCase().includes(q)));
       document.getElementById("gameGrid").innerHTML = list.map(g => {
-        const clickAction = g.gta ? "openWin('gtaGateWin')" : `launchGame('${escapeJs(g.name)}', '${escapeJs(g.url)}')`;
-        const tagText = g.gta ? (state.gta6Downloaded ? "GTA 6 • READY" : "GTA 6 • 3M DL") : g.tag;
+        const clickAction = `openCatalogGame(${GAMES.indexOf(g)})`;
+        const tagText = g.gta ? (state.gta6Downloaded ? "GTA 6 • READY" : "GTA 6 • 3M DL") : (installerFor(g) ? (installReady(installerFor(g)) ? "Installed" : "Download Required") : g.tag);
         return `<div class="media-card" onclick="${clickAction}"><img src="${g.img}" alt="${escapeHtml(g.name)}" loading="lazy" /><div class="media-card-body"><div class="media-card-title">${escapeHtml(g.name)}</div><div class="media-card-sub"><span>${escapeHtml(g.cat)}</span><span class="badge ${g.gta ? "gta" : ""}">${escapeHtml(tagText)}</span></div></div></div>`;
       }).join("");
       document.getElementById("gameCountText").textContent = `${list.length} games`;
@@ -2047,8 +2052,22 @@ SIMULATOR ONLY: process commands affect this desktop demo, never Windows.</div>
 
     window.addEventListener("gamepadconnected", scanGamepads);
 
+
+    const installSpecs={amanda:{seconds:45,win:'amandaWin',host:'amandaInstall',game:GAMES[0]},cod:{seconds:135,win:'codWin',host:'codInstall',game:GAMES.find(g=>g.name.startsWith('Call of Duty'))}};
+    const installRunning={};
+    function installerFor(g){return g===installSpecs.amanda.game?'amanda':g===installSpecs.cod.game?'cod':null;}
+    function installElapsed(k){return Math.min(installSpecs[k].seconds,Number(state.gameInstalls?.[k]||0)+(installRunning[k]? (Date.now()-installRunning[k])/1000:0));}
+    function installReady(k){return installElapsed(k)>=installSpecs[k].seconds;}
+    function openCatalogGame(i){const g=GAMES[i];if(!g)return;const k=installerFor(g);if(g.gta)openWin('gtaGateWin');else if(k){renderInstaller(k);openWin(installSpecs[k].win);}else launchGame(g.name,g.url);}
+    function toggleInstall(k){state.gameInstalls ||= {};if(installReady(k))return;if(installRunning[k]){state.gameInstalls[k]=installElapsed(k);delete installRunning[k];}else installRunning[k]=Date.now();saveState();renderInstaller(k);}
+    function resetInstall(k){delete installRunning[k];state.gameInstalls ||= {};state.gameInstalls[k]=0;saveState();renderInstaller(k);renderGames();}
+    function playInstalled(k){if(installReady(k)){const g=installSpecs[k].game;launchGame(g.name,g.url);}}
+    function renderInstaller(k){const x=installSpecs[k],g=x.game,e=installElapsed(k),ready=installReady(k),pct=Math.floor(e/x.seconds*100);document.getElementById(x.host).innerHTML=`<div class="gta-banner-hero"><img src="${g.img}" style="width:90px;height:90px;object-fit:cover;border-radius:10px"><h3>${escapeHtml(g.name)}</h3><span class="badge">${ready?'Installed':'Download Required'}</span></div><div class="setting-card" style="margin-top:12px"><div class="setting-row"><strong>${pct}% • ${ready?'Ready to Play':installRunning[k]?'Downloading':'Paused / Ready to download'}</strong><span>ETA ${formatClockSec(Math.ceil(x.seconds-e))}</span></div><div class="meter-track"><div class="meter-fill" style="width:${pct}%"></div></div><small>Simulated browser game installation</small><div><button class="btn primary" ${ready?'disabled':''} onclick="toggleInstall('${k}')">${installRunning[k]?'Pause':e?'Resume':'Download'}</button> <button class="btn nvidia" ${ready?'':'disabled'} onclick="playInstalled('${k}')">Play</button> <button class="btn" onclick="resetInstall('${k}')">Reset</button></div></div>`;}
+    function tickInstalls(){for(const k of Object.keys(installSpecs)){if(installRunning[k]){if(installReady(k)){state.gameInstalls ||= {};state.gameInstalls[k]=installSpecs[k].seconds;delete installRunning[k];saveState();renderGames();}renderInstaller(k);}}}
+
     /* Boot */
     loadState();
+    renderInstaller("amanda"); renderInstaller("cod"); setInterval(tickInstalls,500);
     if (!state.pairCode) generatePairCode();
     document.getElementById("qrTargetUrlInput").value = state.qrTargetUrl || "";
     syncGtaGateUi();
